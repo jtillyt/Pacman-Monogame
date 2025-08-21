@@ -19,8 +19,10 @@ namespace Pacman
 
 		public void Update()
 		{
+			GamePadState gState = GamePad.GetState(PlayerIndex.One);
 			KeyboardState kState = Keyboard.GetState();
-			if (kState.IsKeyDown(Keys.Space))
+
+			if (kState.IsKeyDown(Keys.Space) || gState.IsButtonDown(Buttons.Start))
 			{
 				_pacmanGame.GameController.CurrentGameState = GameController.GameState.Menu;
 			}
@@ -28,8 +30,8 @@ namespace Pacman
 
 		public void Draw(SpriteBatch spriteBatch, Text text)
 		{
-			text.draw(spriteBatch, "game over!", new Vector2(100, 321), 48, Text.Color.Red, 2f);
-			spriteBatch.DrawString(BasicFont, "PRESS SPACE TO GO TO MENU", BasicFontPos, Color.Red);
+			text.draw(spriteBatch, "Game Over!", new Vector2(100, 321), 48, Text.Color.Red, 2f);
+			spriteBatch.DrawString(BasicFont, "Press SPACE or START", BasicFontPos, Color.Red);
 		}
 	}
 }
