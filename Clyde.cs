@@ -4,7 +4,7 @@ namespace Pacman
 {
 	public class Clyde : Enemy
 	{
-		public Clyde(int tileX, int tileY, Tile[,] tileArray) : base(tileX, tileY, tileArray)
+		public Clyde(PacmanGame pacmanGame, int tileX, int tileY, Tile[,] tileArray) : base(pacmanGame, tileX, tileY, tileArray)
 		{
 			ScatterTargetTile = new Vector2(2, 29);
 			type = GhostType.Clyde;
@@ -22,7 +22,7 @@ namespace Pacman
 			rectsRight[1] = new Rectangle(1419, 339, 42, 42);
 		}
 
-		public override Vector2 getChaseTargetPosition(Vector2 playerTilePos, Direction playerDir, Tile[,] tileArray)
+		public override Vector2 GetChaseTargetPosition(Vector2 playerTilePos, Direction playerDir, Tile[,] tileArray)
 		{
 			if (Tile.getDistanceBetweenTiles(playerTilePos, currentTile) > 8)
 			{

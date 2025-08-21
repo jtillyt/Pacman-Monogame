@@ -4,37 +4,46 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Pacman
 {
-	public static class Menu
+	public class Menu
 	{
-		private static Texture2D pacmanLogo;
-		private static Rectangle pacmanLogoPos = new Rectangle(13, 40, 4530 / 7, 1184 / 7);
-		private static SpriteFont basicFont;
-		private static Vector2 basicFontPos = new Vector2(150, 400);
+		private readonly Rectangle _pacmanLogoPos = new Rectangle(13, 40, 4530 / 7, 1184 / 7);
+		private readonly Vector2 _lineOne = new Vector2(150, 400);
+		private readonly PacmanGame _pacmanGame;
+		private SpriteFont _basicFont;
+		private Texture2D _pacmanLogo;
 
-		public static SpriteFont setBasicFont
+		public Menu(PacmanGame pacmanGame)
 		{
-			set { basicFont = value; }
+			_pacmanGame = pacmanGame;
 		}
 
-		public static Texture2D setPacmanLogo
+		public SpriteFont BasicFont
 		{
-			set { pacmanLogo = value; }
+			set { _basicFont = value; }
 		}
 
-		public static void Update(GameTime gameTime)
+		public Texture2D PacmanLogo
 		{
+			set { _pacmanLogo = value; }
+		}
+
+		public void Update(GameTime gameTime)
+		{
+			GamePadState gState = GamePad.GetState(PlayerIndex.One);
+
 			KeyboardState kState = Keyboard.GetState();
-			if (kState.IsKeyDown(Keys.Enter))
+
+			if (kState.IsKeyDown(Keys.Enter) || gState.IsButtonDown(Buttons.Start))
 			{
-				PacmanGame._gameController.CurrentGameState = GameController.GameState.Normal;
+				_pacmanGame.GameController.CurrentGameState = GameController.GameState.Normal;
 				MySounds.game_start.Play();
 			}
 		}
 
-		public static void Draw(SpriteBatch spriteBatch)
+		public void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.DrawString(basicFont, "PRESS ENTER TO PLAY", basicFontPos, Color.Red);
-			spriteBatch.Draw(pacmanLogo, pacmanLogoPos, Color.White);
+			spriteBatch.DrawString(_basicFont, "PRESS ENTER OR START", _lineOne, Color.Red);
+			spriteBatch.Draw(_pacmanLogo, _pacmanLogoPos, Color.White);
 		}
 	}
 }

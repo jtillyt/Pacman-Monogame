@@ -4,7 +4,7 @@ namespace Pacman
 {
 	public class Inky : Enemy
 	{
-		public Inky(int tileX, int tileY, Tile[,] tileArray) : base(tileX, tileY, tileArray)
+		public Inky(PacmanGame pacmanGame, int tileX, int tileY, Tile[,] tileArray) : base(pacmanGame, tileX, tileY, tileArray)
 		{
 			ScatterTargetTile = new Vector2(25, 29);
 			type = GhostType.Inky;
@@ -22,7 +22,7 @@ namespace Pacman
 			rectsRight[1] = new Rectangle(1419, 291, 42, 42);
 		}
 
-		public override Vector2 getChaseTargetPosition(Vector2 playerTilePos, Direction playerDir, Tile[,] tileArray, Vector2 blinkyPos)
+		public override Vector2 GetChaseTargetPosition(Vector2 playerTilePos, Direction playerDir, Tile[,] tileArray, Vector2 blinkyPos)
 		{
 			Direction PlayerDir = playerDir;
 			Vector2 PacmanPos = playerTilePos;

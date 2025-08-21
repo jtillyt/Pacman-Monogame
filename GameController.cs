@@ -13,6 +13,8 @@ namespace Pacman
 		private const float GhostTimerChaserLength = 20f;
 		private const float GhostTimerScatterLength = 15f;
 
+		private readonly PacmanGame _pacmanGame;
+
 		private readonly int[,] _mapDesign = new int[,] {
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 			{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
@@ -60,10 +62,7 @@ namespace Pacman
 
 		public GameState CurrentGameState { get; set; } = GameState.Menu;
 
-
 		public int GhostScoreMultiplier { get; set; } = 1;
-
-
 
 		public Vector2 PacmanDeathPosition;
 
@@ -73,10 +72,12 @@ namespace Pacman
 
 		public Tile[,] TileArray;
 
-		public GameController()
+		public GameController(PacmanGame pacmanGame)
 		{
-			TileWidth = PacmanGame.WindowWidth / NumberOfTilesX;
-			TileHeight = (PacmanGame.WindowHeight - PacmanGame.ScoreOffSet) / NumberOfTilesY;
+			_pacmanGame = pacmanGame;
+
+			TileWidth = _pacmanGame.WindowWidth / NumberOfTilesX;
+			TileHeight = (_pacmanGame.WindowHeight - _pacmanGame.ScoreOffSet) / NumberOfTilesY;
 			TileArray = new Tile[NumberOfTilesX, NumberOfTilesY];
 		}
 
@@ -98,37 +99,37 @@ namespace Pacman
 				{
 					if (_mapDesign[y, x] == 0) // small snack
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + _pacmanGame.ScoreOffSet),
 												Tile.TileType.Snack);
 						TileArray[x, y].isEmpty = false;
 						SnackList.Add(new Snack(Snack.SnackType.Small,
-												new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
+												new Vector2(x * TileWidth, (y * TileHeight) + _pacmanGame.ScoreOffSet),
 												new int[] { x, y }));
 					}
 					else if (_mapDesign[y, x] == 1) // wall collider
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + _pacmanGame.ScoreOffSet),
 												Tile.TileType.Wall);
 						TileArray[x, y].isEmpty = false;
 					}
 					else if (_mapDesign[y, x] == 2) //  ghost house
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + _pacmanGame.ScoreOffSet),
 												Tile.TileType.GhostHouse);
 						TileArray[x, y].isEmpty = false;
 					}
 					else if (_mapDesign[y, x] == 3) // big snack
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + _pacmanGame.ScoreOffSet),
 												Tile.TileType.Snack);
 						TileArray[x, y].isEmpty = false;
 						SnackList.Add(new Snack(Snack.SnackType.Big,
-												new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
+												new Vector2(x * TileWidth, (y * TileHeight) + _pacmanGame.ScoreOffSet),
 												new int[] { x, y }));
 					}
 					else if (_mapDesign[y, x] == 5) // empty
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet));
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + _pacmanGame.ScoreOffSet));
 					}
 				}
 			}
@@ -143,20 +144,20 @@ namespace Pacman
 				{
 					if (_mapDesign[y, x] == 0) // small snack
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + _pacmanGame.ScoreOffSet),
 												Tile.TileType.Snack);
 						TileArray[x, y].isEmpty = false;
 						SnackList.Add(new Snack(Snack.SnackType.Small,
-												new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
+												new Vector2(x * TileWidth, (y * TileHeight) + _pacmanGame.ScoreOffSet),
 												new int[] { x, y }));
 					}
 					else if (_mapDesign[y, x] == 3) // big snack
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + _pacmanGame.ScoreOffSet),
 												Tile.TileType.Snack);
 						TileArray[x, y].isEmpty = false;
 						SnackList.Add(new Snack(Snack.SnackType.Big,
-												new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
+												new Vector2(x * TileWidth, (y * TileHeight) + _pacmanGame.ScoreOffSet),
 												new int[] { x, y }));
 					}
 				}
@@ -184,7 +185,7 @@ namespace Pacman
 			}
 		}
 
-		public void drawPacmanGridDebugger(SpriteBatch spriteBatch)
+		public void DrawPacmanGridDebugger(SpriteBatch spriteBatch)
 		{
 			for (int x = 0; x < NumberOfTilesX; x++)
 			{
@@ -206,7 +207,7 @@ namespace Pacman
 			}
 		}
 
-		public void drawPathFindingDebugger(SpriteBatch spriteBatch, List<Vector2> path)
+		public void DrawPathFindingDebugger(SpriteBatch spriteBatch, List<Vector2> path)
 		{
 			if (path == null)
 			{
@@ -260,18 +261,18 @@ namespace Pacman
 			pacman.CurrentTile = new Vector2(13, 23);
 			pacman.PlayerAnim.setSourceRects(Player.rectsRight);
 			pacman.PlayerAnim.setAnimIndex(2);
-			pacman.Direction = Dir.Right;
+			pacman.Direction = Direction.Right;
 
 			MySounds.munchInstance.Stop();
 			MySounds.power_pellet_instance.Stop();
 			MySounds.retreatingInstance.Stop();
 		}
 
-		public bool IsNextTileAvailable(Dir dir, Vector2 tile)
+		public bool IsNextTileAvailable(Direction dir, Vector2 tile)
 		{ // tile != new int[2] {0, 14} && tile != new int[2] {numberOfTilesX-1 ,14}
 			if (tile.Equals(new Vector2(0, 14)) || tile.Equals(new Vector2(NumberOfTilesX - 1, 14)))
 			{
-				if ((dir == Dir.Right) || (dir == Dir.Left))
+				if ((dir == Direction.Right) || (dir == Direction.Left))
 				{
 					return true;
 				}
@@ -284,7 +285,7 @@ namespace Pacman
 			{
 				switch (dir)
 				{
-					case Dir.Right:
+					case Direction.Right:
 						if ((TileArray[((int)tile.X) + 1, (int)tile.Y].tileType == Tile.TileType.Wall) ||
 							(TileArray[((int)tile.X) + 1, (int)tile.Y].tileType == Tile.TileType.GhostHouse))
 						{
@@ -292,7 +293,7 @@ namespace Pacman
 						}
 						break;
 
-					case Dir.Left:
+					case Direction.Left:
 						if ((TileArray[((int)tile.X) - 1, (int)tile.Y].tileType == Tile.TileType.Wall) ||
 							(TileArray[((int)tile.X) - 1, (int)tile.Y].tileType == Tile.TileType.GhostHouse))
 						{
@@ -300,7 +301,7 @@ namespace Pacman
 						}
 						break;
 
-					case Dir.Down:
+					case Direction.Down:
 						if ((TileArray[(int)tile.X, ((int)tile.Y) + 1].tileType == Tile.TileType.Wall) ||
 							(TileArray[(int)tile.X, ((int)tile.Y) + 1].tileType == Tile.TileType.GhostHouse))
 						{
@@ -308,7 +309,7 @@ namespace Pacman
 						}
 						break;
 
-					case Dir.Up:
+					case Direction.Up:
 						if ((TileArray[(int)tile.X, ((int)tile.Y) - 1].tileType == Tile.TileType.Wall) ||
 							(TileArray[(int)tile.X, ((int)tile.Y) - 1].tileType == Tile.TileType.GhostHouse))
 						{
@@ -320,11 +321,11 @@ namespace Pacman
 			}
 		}
 
-		public bool IsNextTileAvailableGhosts(Dir dir, Vector2 tile)
+		public bool IsNextTileAvailableGhosts(Direction dir, Vector2 tile)
 		{ // tile != new int[2] {0, 14} && tile != new int[2] {numberOfTilesX-1 ,14}
 			if (tile.Equals(new Vector2(0, 14)) || tile.Equals(new Vector2(NumberOfTilesX - 1, 14)))
 			{
-				if ((dir == Dir.Right) || (dir == Dir.Left))
+				if ((dir == Direction.Right) || (dir == Direction.Left))
 				{
 					return true;
 				}
@@ -337,28 +338,28 @@ namespace Pacman
 			{
 				switch (dir)
 				{
-					case Dir.Right:
+					case Direction.Right:
 						if (TileArray[((int)tile.X) + 1, (int)tile.Y].tileType == Tile.TileType.Wall)
 						{
 							return false;
 						}
 						break;
 
-					case Dir.Left:
+					case Direction.Left:
 						if (TileArray[((int)tile.X) - 1, (int)tile.Y].tileType == Tile.TileType.Wall)
 						{
 							return false;
 						}
 						break;
 
-					case Dir.Down:
+					case Direction.Down:
 						if (TileArray[(int)tile.X, ((int)tile.Y) + 1].tileType == Tile.TileType.Wall)
 						{
 							return false;
 						}
 						break;
 
-					case Dir.Up:
+					case Direction.Up:
 						if (TileArray[(int)tile.X, ((int)tile.Y) - 1].tileType == Tile.TileType.Wall)
 						{
 							return false;
@@ -390,7 +391,7 @@ namespace Pacman
 			pacman.CurrentTile = new Vector2(13, 23);
 			pacman.PlayerAnim.setSourceRects(Player.rectsRight);
 			pacman.PlayerAnim.setAnimIndex(2);
-			pacman.Direction = Dir.Right;
+			pacman.Direction = Direction.Right;
 
 			MySounds.munchInstance.Stop();
 			MySounds.power_pellet_instance.Stop();
@@ -424,23 +425,23 @@ namespace Pacman
 			c.Position = new Vector2(TileArray[15, 14].Position.X + 12, TileArray[15, 14].Position.Y);
 		}
 
-		public static Dir ReturnOppositeDir(Dir dir)
+		public static Direction ReturnOppositeDir(Direction dir)
 		{
 			switch (dir)
 			{
-				case Dir.Up:
-					return Dir.Down;
+				case Direction.Up:
+					return Direction.Down;
 
-				case Dir.Down:
-					return Dir.Up;
+				case Direction.Down:
+					return Direction.Up;
 
-				case Dir.Right:
-					return Dir.Left;
+				case Direction.Right:
+					return Direction.Left;
 
-				case Dir.Left:
-					return Dir.Right;
+				case Direction.Left:
+					return Direction.Right;
 			}
-			return Dir.None;
+			return Direction.None;
 		}
 
 		public void SetGhostStates(Inky i, Blinky b, Pinky p, Clyde c, Enemy.EnemyState eState)
@@ -609,7 +610,7 @@ namespace Pacman
 			pacman.CurrentTile = new Vector2(13, 23);
 			pacman.PlayerAnim.setSourceRects(Player.rectsRight);
 			pacman.PlayerAnim.setAnimIndex(2);
-			pacman.Direction = Dir.Right;
+			pacman.Direction = Direction.Right;
 
 			MySounds.munchInstance.Stop();
 			MySounds.power_pellet_instance.Stop();

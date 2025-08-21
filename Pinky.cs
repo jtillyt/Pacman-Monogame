@@ -4,7 +4,7 @@ namespace Pacman
 {
 	public class Pinky : Enemy
 	{
-		public Pinky(int tileX, int tileY, Tile[,] tileArray) : base(tileX, tileY, tileArray)
+		public Pinky(PacmanGame pacmanGame, int tileX, int tileY, Tile[,] tileArray) : base(pacmanGame, tileX, tileY, tileArray)
 		{
 			ScatterTargetTile = new Vector2(1, 2);
 			type = GhostType.Pinky;
@@ -24,7 +24,7 @@ namespace Pacman
 			enemyAnim = new SpriteAnimation(0.08f, rectsDown);
 		}
 
-		public override Vector2 getChaseTargetPosition(Vector2 playerTilePos, Direction playerDir, Tile[,] tileArray)
+		public override Vector2 GetChaseTargetPosition(Vector2 playerTilePos, Direction playerDir, Tile[,] tileArray)
 		{
 			Vector2 pos = playerTilePos;
 			Direction PlayerDir = playerDir;

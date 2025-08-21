@@ -4,28 +4,32 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Pacman
 {
-	public static class GameOver
+	public class GameOver
 	{
-		private static SpriteFont basicFont;
-		private static Vector2 basicFontPos = new Vector2(93, 400);
-		public static SpriteFont setBasicFont
+		private readonly PacmanGame _pacmanGame;
+
+		public GameOver(PacmanGame pacmanGame)
 		{
-			set { basicFont = value; }
+			_pacmanGame = pacmanGame;
 		}
 
-		public static void Update()
+		private Vector2 BasicFontPos { get; } = new Vector2(93, 400);
+
+		public SpriteFont BasicFont { get; set; }
+
+		public void Update()
 		{
 			KeyboardState kState = Keyboard.GetState();
 			if (kState.IsKeyDown(Keys.Space))
 			{
-				PacmanGame._gameController.CurrentGameState = GameController.GameState.Menu;
+				_pacmanGame.GameController.CurrentGameState = GameController.GameState.Menu;
 			}
 		}
 
-		public static void Draw(SpriteBatch spriteBatch, Text text)
+		public void Draw(SpriteBatch spriteBatch, Text text)
 		{
 			text.draw(spriteBatch, "game over!", new Vector2(100, 321), 48, Text.Color.Red, 2f);
-			spriteBatch.DrawString(basicFont, "PRESS SPACE TO GO TO MENU", basicFontPos, Color.Red);
+			spriteBatch.DrawString(BasicFont, "PRESS SPACE TO GO TO MENU", BasicFontPos, Color.Red);
 		}
 	}
 }

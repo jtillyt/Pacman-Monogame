@@ -4,7 +4,7 @@ namespace Pacman
 {
 	public class Blinky : Enemy
 	{
-		public Blinky(int tileX, int tileY, Tile[,] tileArray) : base(tileX, tileY, tileArray)
+		public Blinky(PacmanGame pacmanGame, int tileX, int tileY, Tile[,] tileArray) : base(pacmanGame, tileX, tileY, tileArray)
 		{
 			ScatterTargetTile = new Vector2(26, 2);
 			type = GhostType.Blinky;

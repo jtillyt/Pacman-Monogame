@@ -31,9 +31,9 @@ namespace Pacman
 		}
 		protected Vector2 previousTile;
 		protected Tile.TileType previousTileType;
-		protected Dir direction;
+		protected Direction direction;
 
-		protected Dir playerLastDir; // if player direction is none, this remembers the last direction so that the ghost can know its target tile
+		protected Direction playerLastDir; // if player direction is none, this remembers the last direction so that the ghost can know its target tile
 
 		protected List<Vector2> pathToPacMan;
 		protected Vector2 foundpathTile;
@@ -72,15 +72,19 @@ namespace Pacman
 			get { return enemyAnim; }
 		}
 
+		public PacmanGame PacmanGame { get; init; }
+
 		public float timerFrightened;
 		public float timerFrightenedLength = 8f;
 
-		public Enemy(int tileX, int tileY, Tile[,] tileArray)
+		public Enemy(PacmanGame pacmanGame, int tileX, int tileY, Tile[,] tileArray)
 		{
+			PacmanGame = pacmanGame;
+
 			position = tileArray[tileX, tileY].Position;
 			currentTile = new Vector2(tileX, tileY);
 			previousTile = new Vector2(-1, -1);
-			direction = Dir.None;
+			direction = Direction.None;
 
 
 			rectRightEaten = new Rectangle(1755, 243, 42, 42);
@@ -114,23 +118,23 @@ namespace Pacman
 			{
 				switch (direction)
 				{
-					case Dir.Up:
+					case Direction.Up:
 						spriteSheet.drawSprite(spriteBatch, rectUpEaten, new Vector2(position.X + drawOffSetX, position.Y + drawOffSetY));
 						break;
-					case Dir.Down:
+					case Direction.Down:
 						spriteSheet.drawSprite(spriteBatch, rectDownEaten, new Vector2(position.X + drawOffSetX, position.Y + drawOffSetY));
 						break;
-					case Dir.Left:
+					case Direction.Left:
 						spriteSheet.drawSprite(spriteBatch, rectLeftEaten, new Vector2(position.X + drawOffSetX, position.Y + drawOffSetY));
 						break;
-					case Dir.Right:
+					case Direction.Right:
 						spriteSheet.drawSprite(spriteBatch, rectRightEaten, new Vector2(position.X + drawOffSetX, position.Y + drawOffSetY));
 						break;
 				}
 			}
 		}
 
-		public void Update(GameTime gameTime, GameController gameController, Vector2 playerTilePos, Dir playerDir, Vector2 blinkyPos)
+		public void Update(GameTime gameTime, GameController gameController, Vector2 playerTilePos, Direction playerDir, Vector2 blinkyPos)
 		{
 			if (state == EnemyState.Frightened)
 			{
@@ -142,32 +146,32 @@ namespace Pacman
 					timerFrightened = 0;
 				}
 			}
-			updateTilePosition(gameController);
+			UpdateTilePosition(PacmanGame, gameController);
 			enemyAnim.Update(gameTime);
 
-			decideDirection(playerTilePos, playerDir, gameController, blinkyPos);
+			DecideDirection(playerTilePos, playerDir, gameController, blinkyPos);
 			Move(gameTime, gameController.TileArray);
 		}
 
 		// returns target position for diferent ghost states (scatter, chase, etc)
-		public virtual Vector2 getScatterTargetPosition()
+		public virtual Vector2 GetScatterTargetPosition()
 		{
 			return ScatterTargetTile;
 		}
 
-		public virtual Vector2 getChaseTargetPosition(Vector2 playerTilePos, Dir playerDir, Tile[,] tileArray)
+		public virtual Vector2 GetChaseTargetPosition(Vector2 playerTilePos, Direction playerDir, Tile[,] tileArray)
 		{
 			return playerTilePos;
 		}
 
-		public virtual Vector2 getChaseTargetPosition(Vector2 playerTilePos, Dir playerDir, Tile[,] tileArray, Vector2 blinkyPos)
+		public virtual Vector2 GetChaseTargetPosition(Vector2 playerTilePos, Direction playerDir, Tile[,] tileArray, Vector2 blinkyPos)
 		{
 			return playerTilePos;
 		}
 
-		public virtual Vector2 getFrightenedTargetPosition()
+		public virtual Vector2 GetFrightenedTargetPosition()
 		{
-			List<Dir> dirs = new List<Dir>();
+			List<Direction> dirs = new List<Direction>();
 
 			if (currentTile.Equals(new Vector2(0, 14)) || currentTile.Equals(new Vector2(GameController.NumberOfTilesX - 1, 14)))
 			{
@@ -175,17 +179,17 @@ namespace Pacman
 			}
 
 			//checks if ghost is in ghost house, and if it is, returns tile outside of ghosthouse
-			if (PacmanGame._gameController.TileArray[(int)currentTile.X, (int)currentTile.Y].tileType == Tile.TileType.GhostHouse)
+			if (PacmanGame.GameController.TileArray[(int)currentTile.X, (int)currentTile.Y].tileType == Tile.TileType.GhostHouse)
 				return new Vector2(13, 11);
 
-			if (GameController.ReturnOppositeDir(direction) != Dir.Left && PacmanGame._gameController.IsNextTileAvailableGhosts(Dir.Left, currentTile) && PacmanGame._gameController.TileArray[(int)currentTile.X - 1, (int)currentTile.Y].tileType != Tile.TileType.GhostHouse)
-				dirs.Add(Dir.Left);
-			if (GameController.ReturnOppositeDir(direction) != Dir.Right && PacmanGame._gameController.IsNextTileAvailableGhosts(Dir.Right, currentTile) && PacmanGame._gameController.TileArray[(int)currentTile.X + 1, (int)currentTile.Y].tileType != Tile.TileType.GhostHouse)
-				dirs.Add(Dir.Right);
-			if (GameController.ReturnOppositeDir(direction) != Dir.Down && PacmanGame._gameController.IsNextTileAvailableGhosts(Dir.Down, currentTile) && PacmanGame._gameController.TileArray[(int)currentTile.X, (int)currentTile.Y + 1].tileType != Tile.TileType.GhostHouse)
-				dirs.Add(Dir.Down);
-			if (GameController.ReturnOppositeDir(direction) != Dir.Up && PacmanGame._gameController.IsNextTileAvailableGhosts(Dir.Up, currentTile) && PacmanGame._gameController.TileArray[(int)currentTile.X, (int)currentTile.Y - 1].tileType != Tile.TileType.GhostHouse)
-				dirs.Add(Dir.Up);
+			if (GameController.ReturnOppositeDir(direction) != Direction.Left && PacmanGame.GameController.IsNextTileAvailableGhosts(Direction.Left, currentTile) && PacmanGame.GameController.TileArray[(int)currentTile.X - 1, (int)currentTile.Y].tileType != Tile.TileType.GhostHouse)
+				dirs.Add(Direction.Left);
+			if (GameController.ReturnOppositeDir(direction) != Direction.Right && PacmanGame.GameController.IsNextTileAvailableGhosts(Direction.Right, currentTile) && PacmanGame.GameController.TileArray[(int)currentTile.X + 1, (int)currentTile.Y].tileType != Tile.TileType.GhostHouse)
+				dirs.Add(Direction.Right);
+			if (GameController.ReturnOppositeDir(direction) != Direction.Down && PacmanGame.GameController.IsNextTileAvailableGhosts(Direction.Down, currentTile) && PacmanGame.GameController.TileArray[(int)currentTile.X, (int)currentTile.Y + 1].tileType != Tile.TileType.GhostHouse)
+				dirs.Add(Direction.Down);
+			if (GameController.ReturnOppositeDir(direction) != Direction.Up && PacmanGame.GameController.IsNextTileAvailableGhosts(Direction.Up, currentTile) && PacmanGame.GameController.TileArray[(int)currentTile.X, (int)currentTile.Y - 1].tileType != Tile.TileType.GhostHouse)
+				dirs.Add(Direction.Up);
 
 			if (dirs.Count > 0)
 			{
@@ -196,16 +200,16 @@ namespace Pacman
 
 				switch (dirs[randDirNum])
 				{
-					case Dir.Left:
+					case Direction.Left:
 						rPos.X--;
 						break;
-					case Dir.Right:
+					case Direction.Right:
 						rPos.X++;
 						break;
-					case Dir.Down:
+					case Direction.Down:
 						rPos.Y++;
 						break;
-					case Dir.Up:
+					case Direction.Up:
 						rPos.Y--;
 						break;
 				}
@@ -215,14 +219,14 @@ namespace Pacman
 			return currentTile;
 		}
 
-		public virtual Vector2 getEatenTargetPosition()
+		public virtual Vector2 GetEatenTargetPosition()
 		{
 			return eatenTargetTile;
 		}
 
-		public virtual void getEaten()
+		public virtual void GetEaten()
 		{
-			switch (PacmanGame._gameController.GhostScoreMultiplier)
+			switch (PacmanGame.GameController.GhostScoreMultiplier)
 			{
 				case 1:
 					PacmanGame.score += 200;
@@ -237,7 +241,7 @@ namespace Pacman
 					PacmanGame.score += 1600;
 					break;
 			}
-			PacmanGame._gameController.GhostScoreMultiplier += 1;
+			PacmanGame.GameController.GhostScoreMultiplier += 1;
 			state = EnemyState.Eaten;
 			speed = eatenSpeed;
 			timerFrightened = 0;
@@ -247,35 +251,35 @@ namespace Pacman
 			return;
 		}
 
-		public void decideDirection(Vector2 playerTilePos, Dir playerDir, GameController gameController, Vector2 blinkyPos)
+		public void DecideDirection(Vector2 playerTilePos, Direction playerDir, GameController gameController, Vector2 blinkyPos)
 		{
 			if (!foundpathTile.Equals(currentTile))
 			{
 				if (state == EnemyState.Scatter)
 				{
-					pathToPacMan = Pathfinding.findPath(currentTile, getScatterTargetPosition(), gameController.TileArray, direction);
+					pathToPacMan = Pathfinding.findPath(currentTile, GetScatterTargetPosition(), gameController.TileArray, direction);
 				}
 				else if (state == EnemyState.Chase)
 				{
-					pathToPacMan = Pathfinding.findPath(currentTile, getChaseTargetPosition(playerTilePos, playerDir, gameController.TileArray), gameController.TileArray, direction);
+					pathToPacMan = Pathfinding.findPath(currentTile, GetChaseTargetPosition(playerTilePos, playerDir, gameController.TileArray), gameController.TileArray, direction);
 					if (type == GhostType.Inky)
 					{
-						pathToPacMan = Pathfinding.findPath(currentTile, getChaseTargetPosition(playerTilePos, playerDir, gameController.TileArray, blinkyPos), gameController.TileArray, direction);
+						pathToPacMan = Pathfinding.findPath(currentTile, GetChaseTargetPosition(playerTilePos, playerDir, gameController.TileArray, blinkyPos), gameController.TileArray, direction);
 					}
 				}
 				else if (state == EnemyState.Frightened)
 				{
-					pathToPacMan = Pathfinding.findPath(currentTile, getFrightenedTargetPosition(), gameController.TileArray, direction);
+					pathToPacMan = Pathfinding.findPath(currentTile, GetFrightenedTargetPosition(), gameController.TileArray, direction);
 				}
 				else if (state == EnemyState.Eaten)
 				{
-					pathToPacMan = Pathfinding.findPath(currentTile, getEatenTargetPosition(), gameController.TileArray, direction);
+					pathToPacMan = Pathfinding.findPath(currentTile, GetEatenTargetPosition(), gameController.TileArray, direction);
 				}
 				foundpathTile = currentTile;
 			}
 
 
-			if (currentTile.Equals(getEatenTargetPosition()) && state == EnemyState.Eaten)
+			if (currentTile.Equals(GetEatenTargetPosition()) && state == EnemyState.Eaten)
 			{
 				state = EnemyState.Chase;
 				speed = normalSpeed;
@@ -285,7 +289,7 @@ namespace Pacman
 			{
 				if (state == EnemyState.Frightened)
 				{
-					getEaten();
+					GetEaten();
 				}
 				if (state != EnemyState.Eaten)
 				{
@@ -298,22 +302,22 @@ namespace Pacman
 
 			if (pathToPacMan[0].X > currentTile.X)
 			{
-				direction = Dir.Right;
+				direction = Direction.Right;
 				position.Y = gameController.TileArray[(int)currentTile.X, (int)currentTile.Y].Position.Y;
 			}
 			else if (pathToPacMan[0].X < currentTile.X)
 			{
-				direction = Dir.Left;
+				direction = Direction.Left;
 				position.Y = gameController.TileArray[(int)currentTile.X, (int)currentTile.Y].Position.Y;
 			}
 			else if (pathToPacMan[0].Y > currentTile.Y)
 			{
-				direction = Dir.Down;
+				direction = Direction.Down;
 				position.X = gameController.TileArray[(int)currentTile.X, (int)currentTile.Y].Position.X;
 			}
 			else if (pathToPacMan[0].Y < currentTile.Y)
 			{
-				direction = Dir.Up;
+				direction = Direction.Up;
 				position.X = gameController.TileArray[(int)currentTile.X, (int)currentTile.Y].Position.X;
 			}
 		}
@@ -324,7 +328,7 @@ namespace Pacman
 
 			switch (direction)
 			{
-				case Dir.Right:
+				case Direction.Right:
 					position.X += speed * dt;
 					if (state == EnemyState.Frightened)
 					{
@@ -339,7 +343,7 @@ namespace Pacman
 						enemyAnim.setSourceRects(rectsRight);
 					break;
 
-				case Dir.Left:
+				case Direction.Left:
 					position.X -= speed * dt;
 					if (state == EnemyState.Frightened)
 					{
@@ -354,7 +358,7 @@ namespace Pacman
 						enemyAnim.setSourceRects(rectsLeft);
 					break;
 
-				case Dir.Down:
+				case Direction.Down:
 					position.Y += speed * dt;
 					if (state == EnemyState.Frightened)
 					{
@@ -369,7 +373,7 @@ namespace Pacman
 						enemyAnim.setSourceRects(rectsDown);
 					break;
 
-				case Dir.Up:
+				case Direction.Up:
 					position.Y -= speed * dt;
 					if (state == EnemyState.Frightened)
 					{
@@ -384,13 +388,13 @@ namespace Pacman
 						enemyAnim.setSourceRects(rectsUp);
 					break;
 
-				case Dir.None:
+				case Direction.None:
 					position = tileArray[(int)currentTile.X, (int)currentTile.Y].Position;
 					break;
 			}
 		}
 
-		public int checkForTeleportPos(Tile[,] tileArray)
+		public int CheckForTeleportPos(Tile[,] tileArray)
 		{
 			if (new int[2] { (int)currentTile.X, (int)currentTile.Y }.SequenceEqual(new int[2] { 0, 14 }))
 			{
@@ -409,26 +413,26 @@ namespace Pacman
 			return 0;
 		}
 
-		public void teleport(Vector2 pos, Vector2 tilePos)
+		public void Teleport(Vector2 pos, Vector2 tilePos)
 		{
 			position = pos;
 			previousTile = currentTile;
 			currentTile = tilePos;
 		}
 
-		public void updateTilePosition(GameController controller)
+		public void UpdateTilePosition(PacmanGame pacmanGame, GameController controller)
 		{
 			Tile[,] tileArray = controller.TileArray;
 
-			if (checkForTeleportPos(tileArray) == 1)
+			if (CheckForTeleportPos(tileArray) == 1)
 			{
-				if (direction == Dir.Left)
-					teleport(new Vector2(PacmanGame.WindowWidth + 30, position.Y), new Vector2(GameController.NumberOfTilesX - 1, 14));
+				if (direction == Direction.Left)
+					Teleport(new Vector2(pacmanGame.WindowWidth + 30, position.Y), new Vector2(GameController.NumberOfTilesX - 1, 14));
 			}
-			else if (checkForTeleportPos(tileArray) == 2)
+			else if (CheckForTeleportPos(tileArray) == 2)
 			{
-				if (direction == Dir.Right)
-					teleport(new Vector2(-30, position.Y), new Vector2(0, 14));
+				if (direction == Direction.Right)
+					Teleport(new Vector2(-30, position.Y), new Vector2(0, 14));
 			}
 
 			for (int x = 0; x < tileArray.GetLength(0); x++)
@@ -446,17 +450,17 @@ namespace Pacman
 
 					switch (direction)
 					{
-						case Dir.Right:
+						case Direction.Right:
 							nextTilePosX = tileArray[x, y].Position.X + controller.TileWidth;
 							break;
-						case Dir.Left:
+						case Direction.Left:
 							nextTilePosX = tileArray[x, y].Position.X - controller.TileWidth;
 							posOffSetX *= -1;
 							break;
-						case Dir.Down:
+						case Direction.Down:
 							nextTilePosY = tileArray[x, y].Position.Y + controller.TileHeight;
 							break;
-						case Dir.Up:
+						case Direction.Up:
 							nextTilePosY = tileArray[x, y].Position.Y - controller.TileHeight;
 							posOffSetY *= -1;
 							break;
@@ -465,7 +469,7 @@ namespace Pacman
 					float posX = position.X + posOffSetX;
 					float posY = position.Y + posOffSetY;
 
-					if (direction == Dir.Right || direction == Dir.Down)
+					if (direction == Direction.Right || direction == Direction.Down)
 					{
 						if (posX >= tilePosX && posX < nextTilePosX)
 						{
@@ -479,7 +483,7 @@ namespace Pacman
 							}
 						}
 					}
-					else if (direction == Dir.Left)
+					else if (direction == Direction.Left)
 					{
 						if (posX <= tilePosX && posX > nextTilePosX)
 						{
@@ -493,7 +497,7 @@ namespace Pacman
 							}
 						}
 					}
-					else if (direction == Dir.Up)
+					else if (direction == Direction.Up)
 					{
 						if (posX >= tilePosX && posX < nextTilePosX)
 						{
