@@ -152,6 +152,8 @@ namespace Pacman
 
         protected override void Update(GameTime gameTime)
         {
+            //var caps = GamePad.GetCapabilities(0);
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 

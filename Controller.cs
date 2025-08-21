@@ -279,7 +279,7 @@ namespace Pacman
 
             if (i.colliding == true || b.colliding == true || p.colliding == true || c.colliding == true)
             {
-                killPacman(i, b, p, c, Pacman);
+                //killPacman(i, b, p, c, Pacman);
                 i.colliding = false;
                 b.colliding = false;
                 p.colliding = false;
