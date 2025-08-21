@@ -130,7 +130,7 @@ namespace Pacman
 			}
 		}
 
-		public void Update(GameTime gameTime, Controller gameController, Vector2 playerTilePos, Dir playerDir, Vector2 blinkyPos)
+		public void Update(GameTime gameTime, GameController gameController, Vector2 playerTilePos, Dir playerDir, Vector2 blinkyPos)
 		{
 			if (state == EnemyState.Frightened)
 			{
@@ -169,22 +169,22 @@ namespace Pacman
 		{
 			List<Dir> dirs = new List<Dir>();
 
-			if (currentTile.Equals(new Vector2(0, 14)) || currentTile.Equals(new Vector2(Controller.NumberOfTilesX - 1, 14)))
+			if (currentTile.Equals(new Vector2(0, 14)) || currentTile.Equals(new Vector2(GameController.NumberOfTilesX - 1, 14)))
 			{
 				return currentTile;
 			}
 
 			//checks if ghost is in ghost house, and if it is, returns tile outside of ghosthouse
-			if (Game1.gameController.TileArray[(int)currentTile.X, (int)currentTile.Y].tileType == Tile.TileType.GhostHouse)
+			if (PacmanGame._gameController.TileArray[(int)currentTile.X, (int)currentTile.Y].tileType == Tile.TileType.GhostHouse)
 				return new Vector2(13, 11);
 
-			if (Controller.ReturnOppositeDir(direction) != Dir.Left && Game1.gameController.IsNextTileAvailableGhosts(Dir.Left, currentTile) && Game1.gameController.TileArray[(int)currentTile.X - 1, (int)currentTile.Y].tileType != Tile.TileType.GhostHouse)
+			if (GameController.ReturnOppositeDir(direction) != Dir.Left && PacmanGame._gameController.IsNextTileAvailableGhosts(Dir.Left, currentTile) && PacmanGame._gameController.TileArray[(int)currentTile.X - 1, (int)currentTile.Y].tileType != Tile.TileType.GhostHouse)
 				dirs.Add(Dir.Left);
-			if (Controller.ReturnOppositeDir(direction) != Dir.Right && Game1.gameController.IsNextTileAvailableGhosts(Dir.Right, currentTile) && Game1.gameController.TileArray[(int)currentTile.X + 1, (int)currentTile.Y].tileType != Tile.TileType.GhostHouse)
+			if (GameController.ReturnOppositeDir(direction) != Dir.Right && PacmanGame._gameController.IsNextTileAvailableGhosts(Dir.Right, currentTile) && PacmanGame._gameController.TileArray[(int)currentTile.X + 1, (int)currentTile.Y].tileType != Tile.TileType.GhostHouse)
 				dirs.Add(Dir.Right);
-			if (Controller.ReturnOppositeDir(direction) != Dir.Down && Game1.gameController.IsNextTileAvailableGhosts(Dir.Down, currentTile) && Game1.gameController.TileArray[(int)currentTile.X, (int)currentTile.Y + 1].tileType != Tile.TileType.GhostHouse)
+			if (GameController.ReturnOppositeDir(direction) != Dir.Down && PacmanGame._gameController.IsNextTileAvailableGhosts(Dir.Down, currentTile) && PacmanGame._gameController.TileArray[(int)currentTile.X, (int)currentTile.Y + 1].tileType != Tile.TileType.GhostHouse)
 				dirs.Add(Dir.Down);
-			if (Controller.ReturnOppositeDir(direction) != Dir.Up && Game1.gameController.IsNextTileAvailableGhosts(Dir.Up, currentTile) && Game1.gameController.TileArray[(int)currentTile.X, (int)currentTile.Y - 1].tileType != Tile.TileType.GhostHouse)
+			if (GameController.ReturnOppositeDir(direction) != Dir.Up && PacmanGame._gameController.IsNextTileAvailableGhosts(Dir.Up, currentTile) && PacmanGame._gameController.TileArray[(int)currentTile.X, (int)currentTile.Y - 1].tileType != Tile.TileType.GhostHouse)
 				dirs.Add(Dir.Up);
 
 			if (dirs.Count > 0)
@@ -222,22 +222,22 @@ namespace Pacman
 
 		public virtual void getEaten()
 		{
-			switch (Game1.gameController.GhostScoreMultiplier)
+			switch (PacmanGame._gameController.GhostScoreMultiplier)
 			{
 				case 1:
-					Game1.score += 200;
+					PacmanGame.score += 200;
 					break;
 				case 2:
-					Game1.score += 400;
+					PacmanGame.score += 400;
 					break;
 				case 3:
-					Game1.score += 800;
+					PacmanGame.score += 800;
 					break;
 				case 4:
-					Game1.score += 1600;
+					PacmanGame.score += 1600;
 					break;
 			}
-			Game1.gameController.GhostScoreMultiplier += 1;
+			PacmanGame._gameController.GhostScoreMultiplier += 1;
 			state = EnemyState.Eaten;
 			speed = eatenSpeed;
 			timerFrightened = 0;
@@ -247,7 +247,7 @@ namespace Pacman
 			return;
 		}
 
-		public void decideDirection(Vector2 playerTilePos, Dir playerDir, Controller gameController, Vector2 blinkyPos)
+		public void decideDirection(Vector2 playerTilePos, Dir playerDir, GameController gameController, Vector2 blinkyPos)
 		{
 			if (!foundpathTile.Equals(currentTile))
 			{
@@ -399,7 +399,7 @@ namespace Pacman
 					return 1;
 				}
 			}
-			else if (new int[2] { (int)currentTile.X, (int)currentTile.Y }.SequenceEqual(new int[2] { Controller.NumberOfTilesX - 1, 14 }))
+			else if (new int[2] { (int)currentTile.X, (int)currentTile.Y }.SequenceEqual(new int[2] { GameController.NumberOfTilesX - 1, 14 }))
 			{
 				if (position.X > tileArray[(int)currentTile.X, (int)currentTile.Y].Position.X + 30)
 				{
@@ -416,14 +416,14 @@ namespace Pacman
 			currentTile = tilePos;
 		}
 
-		public void updateTilePosition(Controller controller)
+		public void updateTilePosition(GameController controller)
 		{
 			Tile[,] tileArray = controller.TileArray;
 
 			if (checkForTeleportPos(tileArray) == 1)
 			{
 				if (direction == Dir.Left)
-					teleport(new Vector2(Game1.windowWidth + 30, position.Y), new Vector2(Controller.NumberOfTilesX - 1, 14));
+					teleport(new Vector2(PacmanGame.WindowWidth + 30, position.Y), new Vector2(GameController.NumberOfTilesX - 1, 14));
 			}
 			else if (checkForTeleportPos(tileArray) == 2)
 			{

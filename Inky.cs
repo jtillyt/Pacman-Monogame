@@ -22,13 +22,13 @@ namespace Pacman
 			rectsRight[1] = new Rectangle(1419, 291, 42, 42);
 		}
 
-		public override Vector2 getChaseTargetPosition(Vector2 playerTilePos, Dir playerDir, Tile[,] tileArray, Vector2 blinkyPos)
+		public override Vector2 getChaseTargetPosition(Vector2 playerTilePos, Direction playerDir, Tile[,] tileArray, Vector2 blinkyPos)
 		{
-			Dir PlayerDir = playerDir;
+			Direction PlayerDir = playerDir;
 			Vector2 PacmanPos = playerTilePos;
 			Vector2 BlinkyPos = blinkyPos;
 
-			if (PlayerDir == Dir.None)
+			if (PlayerDir == Direction.None)
 			{
 				PlayerDir = playerLastDir;
 			}
@@ -37,21 +37,21 @@ namespace Pacman
 
 			switch (PlayerDir)
 			{
-				case Dir.Down:
+				case Direction.Down:
 					finalTarget.Y += 2;
-					playerLastDir = Dir.Down;
+					playerLastDir = Direction.Down;
 					break;
-				case Dir.Up:
+				case Direction.Up:
 					finalTarget.Y -= 2;
-					playerLastDir = Dir.Up;
+					playerLastDir = Direction.Up;
 					break;
-				case Dir.Left:
+				case Direction.Left:
 					finalTarget.X -= 2;
-					playerLastDir = Dir.Left;
+					playerLastDir = Direction.Left;
 					break;
-				case Dir.Right:
+				case Direction.Right:
 					finalTarget.X += 2;
-					playerLastDir = Dir.Right;
+					playerLastDir = Direction.Right;
 					break;
 			}
 
@@ -79,7 +79,7 @@ namespace Pacman
 			finalTarget.X += currentTile.X;
 			finalTarget.Y += currentTile.Y;
 
-			if (finalTarget.X < 0 || finalTarget.Y < 0 || finalTarget.X > Controller.NumberOfTilesX - 1 || finalTarget.Y > Controller.NumberOfTilesY - 1)
+			if (finalTarget.X < 0 || finalTarget.Y < 0 || finalTarget.X > GameController.NumberOfTilesX - 1 || finalTarget.Y > GameController.NumberOfTilesY - 1)
 			{
 				return playerTilePos;
 			}

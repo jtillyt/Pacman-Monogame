@@ -24,36 +24,36 @@ namespace Pacman
 			enemyAnim = new SpriteAnimation(0.08f, rectsDown);
 		}
 
-		public override Vector2 getChaseTargetPosition(Vector2 playerTilePos, Dir playerDir, Tile[,] tileArray)
+		public override Vector2 getChaseTargetPosition(Vector2 playerTilePos, Direction playerDir, Tile[,] tileArray)
 		{
 			Vector2 pos = playerTilePos;
-			Dir PlayerDir = playerDir;
+			Direction PlayerDir = playerDir;
 
-			if (PlayerDir == Dir.None)
+			if (PlayerDir == Direction.None)
 			{
 				PlayerDir = playerLastDir;
 			}
 
 			switch (PlayerDir)
 			{
-				case Dir.Right:
+				case Direction.Right:
 					pos = new Vector2(playerTilePos.X + 4, playerTilePos.Y);
-					playerLastDir = Dir.Right;
+					playerLastDir = Direction.Right;
 					break;
-				case Dir.Left:
+				case Direction.Left:
 					pos = new Vector2(playerTilePos.X - 4, playerTilePos.Y);
-					playerLastDir = Dir.Left;
+					playerLastDir = Direction.Left;
 					break;
-				case Dir.Down:
+				case Direction.Down:
 					pos = new Vector2(playerTilePos.X, playerTilePos.Y + 4);
-					playerLastDir = Dir.Down;
+					playerLastDir = Direction.Down;
 					break;
-				case Dir.Up:
+				case Direction.Up:
 					pos = new Vector2(playerTilePos.X, playerTilePos.Y - 4);
-					playerLastDir = Dir.Up;
+					playerLastDir = Direction.Up;
 					break;
 			}
-			if (pos.X < 0 || pos.Y < 0 || pos.X > Controller.NumberOfTilesX - 1 || pos.Y > Controller.NumberOfTilesY - 1)
+			if (pos.X < 0 || pos.Y < 0 || pos.X > GameController.NumberOfTilesX - 1 || pos.Y > GameController.NumberOfTilesY - 1)
 			{
 				return playerTilePos;
 			}

@@ -38,14 +38,14 @@ namespace Pacman
 			gridTile = newGridTile;
 		}
 
-		public void Draw(SpriteBatch spriteBatch, Controller controller)
+		public void Draw(SpriteBatch spriteBatch, GameController controller)
 		{
 			if (snackType == SnackType.Small)
-				Game1.spriteSheet1.drawSprite(spriteBatch, smallSnackRect, new Vector2(gridPosition.X + controller.TileWidth / 2 - radiusOffSet, gridPosition.Y + controller.TileHeight / 2 - radiusOffSet));
+				PacmanGame.spriteSheet1.drawSprite(spriteBatch, smallSnackRect, new Vector2(gridPosition.X + controller.TileWidth / 2 - radiusOffSet, gridPosition.Y + controller.TileHeight / 2 - radiusOffSet));
 			else
 			{
-				if (timerBigSnack >= 10 || Game1.gamePauseTimer > 0)
-					Game1.spriteSheet1.drawSprite(spriteBatch, bigSnackRect, new Vector2(gridPosition.X + controller.TileWidth / 2 - radiusOffSet, gridPosition.Y + controller.TileHeight / 2 - radiusOffSet));
+				if (timerBigSnack >= 10 || PacmanGame.gamePauseTimer > 0)
+					PacmanGame.spriteSheet1.drawSprite(spriteBatch, bigSnackRect, new Vector2(gridPosition.X + controller.TileWidth / 2 - radiusOffSet, gridPosition.Y + controller.TileHeight / 2 - radiusOffSet));
 				timerBigSnack -= 1;
 				if (timerBigSnack < 0)
 				{

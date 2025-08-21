@@ -18,7 +18,7 @@ namespace Pacman
 			KeyboardState kState = Keyboard.GetState();
 			if (kState.IsKeyDown(Keys.Space))
 			{
-				Game1.gameController.CurrentGameState = Controller.GameState.Menu;
+				PacmanGame._gameController.CurrentGameState = GameController.GameState.Menu;
 			}
 		}
 

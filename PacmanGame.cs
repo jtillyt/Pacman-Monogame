@@ -5,20 +5,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Pacman
 {
-	public enum Dir
-	{
-		Down,
-		Up,
-		Left,
-		Right,
-		None
-	}
 
-	public class Game1 : Game
+	public class PacmanGame : Game
 	{
-		public static Controller gameController;
+		public static GameController _gameController;
 
+		private Rectangle _backgroundRect = new Rectangle(684, 0, 672, 744);
 		private readonly GraphicsDeviceManager _graphics;
+
 		private SpriteBatch _spriteBatch;
 
 		public static Texture2D GeneralSprites1;
@@ -35,21 +29,14 @@ namespace Pacman
 		public static SpriteSheet spriteSheet1;
 		public static SpriteSheet spriteSheet2;
 
-		public static int scoreOffSet = 27;
-		public static int windowHeight = 744 + scoreOffSet;
-		public static int windowWidth = 672;
-
 		public static float gamePauseTimer;
 		public static float gameStartSongLength;
+		public static Text Text;
 
-		public static Text text;
-
-		Rectangle backgroundRect = new Rectangle(684, 0, 672, 744);
-
-		Inky inky;
-		Blinky blinky;
-		Clyde clyde;
-		Pinky pinky;
+		private Inky _inky;
+		private Blinky _blinky;
+		private Clyde _clyde;
+		private Pinky _pinky;
 
 		Player Pacman;
 
@@ -60,17 +47,21 @@ namespace Pacman
 
 		public static int score;
 
-		public Game1()
+		public PacmanGame()
 		{
 			_graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 			IsMouseVisible = true;
 		}
 
+		public int ScoreOffSet { get; } = 27;
+		public int WindowHeight => 744 + ScoreOffSet;
+		public int WindowWidth { get; } = 672;
+
 		protected override void Initialize()
 		{
-			_graphics.PreferredBackBufferWidth = windowWidth;
-			_graphics.PreferredBackBufferHeight = windowHeight;
+			_graphics.PreferredBackBufferWidth = WindowWidth;
+			_graphics.PreferredBackBufferHeight = WindowHeight;
 			_graphics.ApplyChanges();
 
 			base.Initialize();
@@ -128,17 +119,17 @@ namespace Pacman
 			Menu.setBasicFont = Content.Load<SpriteFont>("simpleFont");
 			GameOver.setBasicFont = Content.Load<SpriteFont>("simpleFont");
 
-			text = new Text(new SpriteSheet(Content.Load<Texture2D>("Spritesheets/TextSprites")));
+			Text = new Text(new SpriteSheet(Content.Load<Texture2D>("Spritesheets/TextSprites")));
 
-			gameController = new Controller();
-			gameController.CreateGrid();
+			_gameController = new GameController();
+			_gameController.CreateGrid();
 
-			inky = new Inky(11, 14, gameController.TileArray);
-			blinky = new Blinky(13, 11, gameController.TileArray);
-			pinky = new Pinky(13, 14, gameController.TileArray);
-			clyde = new Clyde(15, 14, gameController.TileArray);
+			_inky = new Inky(11, 14, _gameController.TileArray);
+			_blinky = new Blinky(13, 11, _gameController.TileArray);
+			_pinky = new Pinky(13, 14, _gameController.TileArray);
+			_clyde = new Clyde(15, 14, _gameController.TileArray);
 
-			Pacman = new Player(13, 23, gameController.TileArray);
+			Pacman = new Player(13, 23, _gameController.TileArray);
 
 			pacmanDeathAnimation = new SpriteAnimation(0.278f, Player.deathAnimRect, 0, false, false);
 
@@ -155,14 +146,14 @@ namespace Pacman
 
 			float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-			if (gameController.CurrentGameState == Controller.GameState.GameOver)
+			if (_gameController.CurrentGameState == GameController.GameState.GameOver)
 			{
 				GameOver.Update();
 				base.Update(gameTime);
 				return;
 			}
 
-			if (gameController.CurrentGameState == Controller.GameState.Menu)
+			if (_gameController.CurrentGameState == GameController.GameState.Menu)
 			{
 				Menu.Update(gameTime);
 				base.Update(gameTime);
@@ -172,7 +163,7 @@ namespace Pacman
 			// checks for game over
 			if (Pacman.ExtraLives < 0 && !pacmanDeathAnimation.IsPlaying)
 			{
-				gameController.GameOver(inky, blinky, pinky, clyde, Pacman);
+				_gameController.GameOver(_inky, _blinky, _pinky, _clyde, Pacman);
 			}
 
 			// checks if game is paused, if true returns
@@ -196,18 +187,26 @@ namespace Pacman
 				hasPauseJustEnded = false;
 			}
 
-			Pacman.UpdatePlayerTilePosition(gameController);
-			Pacman.Update(gameTime, gameController.TileArray);
-			gameController.UpdateGhosts(inky, blinky, pinky, clyde, gameTime, Pacman, blinky.CurrentTile);
-			if (gameController.StartPacmanDeathAnim)
+			Pacman.UpdatePlayerTilePosition(_gameController);
+			Pacman.Update(gameTime, _gameController.TileArray);
+
+			_gameController.UpdateGhosts(_inky,
+										_blinky,
+										_pinky,
+										_clyde,
+										gameTime,
+										Pacman,
+										_blinky.CurrentTile);
+
+			if (_gameController.StartPacmanDeathAnim)
 			{
-				gameController.StartPacmanDeathAnim = false;
+				_gameController.StartPacmanDeathAnim = false;
 				pacmanDeathAnimation.start();
 			}
 
-			if (gameController.SnackList.Count == 0)
+			if (_gameController.SnackList.Count == 0)
 			{
-				gameController.Win(inky, blinky, pinky, clyde, Pacman);
+				_gameController.Win(_inky, _blinky, _pinky, _clyde, Pacman);
 				gamePauseTimer = 3f;
 				base.Update(gameTime);
 			}
@@ -221,26 +220,26 @@ namespace Pacman
 
 			_spriteBatch.Begin();
 
-			if (gameController.CurrentGameState == Controller.GameState.Normal)
+			if (_gameController.CurrentGameState == GameController.GameState.Normal)
 			{
-				spriteSheet1.drawSprite(_spriteBatch, backgroundRect, new Vector2(0, scoreOffSet));
-				text.draw(_spriteBatch, "score - " + score, new Vector2(3, 3), 24, Text.Color.White);
+				spriteSheet1.drawSprite(_spriteBatch, _backgroundRect, new Vector2(0, ScoreOffSet));
+				Text.draw(_spriteBatch, "score - " + score, new Vector2(3, 3), 24, Text.Color.White);
 				if (Pacman.ExtraLives != -1)
-					text.draw(_spriteBatch, "lives " + Pacman.ExtraLives, new Vector2(500, 3), 24, Text.Color.White);
+					Text.draw(_spriteBatch, "lives " + Pacman.ExtraLives, new Vector2(500, 3), 24, Text.Color.White);
 				else
-					text.draw(_spriteBatch, "lives 0", new Vector2(500, 3), 24, Text.Color.White);
+					Text.draw(_spriteBatch, "lives 0", new Vector2(500, 3), 24, Text.Color.White);
 
-				foreach (Snack snack in gameController.SnackList)
+				foreach (Snack snack in _gameController.SnackList)
 				{
-					snack.Draw(_spriteBatch, gameController);
+					snack.Draw(_spriteBatch, _gameController);
 				}
 				if (!pacmanDeathAnimation.IsPlaying)
 					Pacman.Draw(_spriteBatch, spriteSheet1);
 				if (hasPassedInitialSong || score == 0)
 					if (!pacmanDeathAnimation.IsPlaying)
-						gameController.DrawGhosts(inky, blinky, pinky, clyde, _spriteBatch, spriteSheet1);
+						_gameController.DrawGhosts(_inky, _blinky, _pinky, _clyde, _spriteBatch, spriteSheet1);
 
-				pacmanDeathAnimation.Draw(_spriteBatch, spriteSheet1, gameController.PacmanDeathPosition);
+				pacmanDeathAnimation.Draw(_spriteBatch, spriteSheet1, _gameController.PacmanDeathPosition);
 
 				//gameController.drawGridDebugger(_spriteBatch);
 
@@ -253,12 +252,12 @@ namespace Pacman
 				//Pacman.debugPacmanPosition(_spriteBatch);
 			}
 
-			else if (gameController.CurrentGameState == Controller.GameState.GameOver)
+			else if (_gameController.CurrentGameState == GameController.GameState.GameOver)
 			{
-				GameOver.Draw(_spriteBatch, text);
+				GameOver.Draw(_spriteBatch, Text);
 			}
 
-			else if (gameController.CurrentGameState == Controller.GameState.Menu)
+			else if (_gameController.CurrentGameState == GameController.GameState.Menu)
 			{
 				Menu.Draw(_spriteBatch);
 			}

@@ -4,10 +4,14 @@ using System.Collections.Generic;
 
 namespace Pacman
 {
-	public class Controller
+	public class GameController
 	{
 		public const int NumberOfTilesX = 28;
 		public const int NumberOfTilesY = 31;
+
+		private const float GhostInitialTimerLength = 2f;
+		private const float GhostTimerChaserLength = 20f;
+		private const float GhostTimerScatterLength = 15f;
 
 		private readonly int[,] _mapDesign = new int[,] {
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
@@ -56,13 +60,10 @@ namespace Pacman
 
 		public GameState CurrentGameState { get; set; } = GameState.Menu;
 
-		public float GhostInitialTimerLength { get; set; } = 2f;
 
 		public int GhostScoreMultiplier { get; set; } = 1;
 
-		public float GhostTimerChaserLength { get; set; } = 20f;
 
-		public float GhostTimerScatterLength { get; set; } = 15f;
 
 		public Vector2 PacmanDeathPosition;
 
@@ -72,10 +73,10 @@ namespace Pacman
 
 		public Tile[,] TileArray;
 
-		public Controller()
+		public GameController()
 		{
-			TileWidth = Game1.windowWidth / NumberOfTilesX;
-			TileHeight = (Game1.windowHeight - Game1.scoreOffSet) / NumberOfTilesY;
+			TileWidth = PacmanGame.WindowWidth / NumberOfTilesX;
+			TileHeight = (PacmanGame.WindowHeight - PacmanGame.ScoreOffSet) / NumberOfTilesY;
 			TileArray = new Tile[NumberOfTilesX, NumberOfTilesY];
 		}
 
@@ -97,37 +98,37 @@ namespace Pacman
 				{
 					if (_mapDesign[y, x] == 0) // small snack
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
 												Tile.TileType.Snack);
 						TileArray[x, y].isEmpty = false;
 						SnackList.Add(new Snack(Snack.SnackType.Small,
-												new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
 												new int[] { x, y }));
 					}
 					else if (_mapDesign[y, x] == 1) // wall collider
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
 												Tile.TileType.Wall);
 						TileArray[x, y].isEmpty = false;
 					}
 					else if (_mapDesign[y, x] == 2) //  ghost house
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
 												Tile.TileType.GhostHouse);
 						TileArray[x, y].isEmpty = false;
 					}
 					else if (_mapDesign[y, x] == 3) // big snack
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
 												Tile.TileType.Snack);
 						TileArray[x, y].isEmpty = false;
 						SnackList.Add(new Snack(Snack.SnackType.Big,
-												new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
 												new int[] { x, y }));
 					}
 					else if (_mapDesign[y, x] == 5) // empty
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet));
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet));
 					}
 				}
 			}
@@ -142,20 +143,20 @@ namespace Pacman
 				{
 					if (_mapDesign[y, x] == 0) // small snack
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
 												Tile.TileType.Snack);
 						TileArray[x, y].isEmpty = false;
 						SnackList.Add(new Snack(Snack.SnackType.Small,
-												new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
 												new int[] { x, y }));
 					}
 					else if (_mapDesign[y, x] == 3) // big snack
 					{
-						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
 												Tile.TileType.Snack);
 						TileArray[x, y].isEmpty = false;
 						SnackList.Add(new Snack(Snack.SnackType.Big,
-												new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												new Vector2(x * TileWidth, (y * TileHeight) + PacmanGame.ScoreOffSet),
 												new int[] { x, y }));
 					}
 				}
@@ -177,8 +178,8 @@ namespace Pacman
 				for (int y = 0; y < NumberOfTilesY; y++)
 				{
 					Vector2 dotPosition = TileArray[x, y].Position;
-					spriteBatch.Draw(Game1.debugLineX, dotPosition, Color.White);
-					spriteBatch.Draw(Game1.debugLineY, dotPosition, Color.White);
+					spriteBatch.Draw(PacmanGame.debugLineX, dotPosition, Color.White);
+					spriteBatch.Draw(PacmanGame.debugLineY, dotPosition, Color.White);
 				}
 			}
 		}
@@ -192,12 +193,12 @@ namespace Pacman
 					Vector2 dotPosition = TileArray[x, y].Position;
 					if (TileArray[x, y].tileType == Tile.TileType.Player)
 					{
-						spriteBatch.Draw(Game1.playerDebugLineX, dotPosition, Color.White);
-						spriteBatch.Draw(Game1.playerDebugLineY, dotPosition, Color.White);
-						spriteBatch.Draw(Game1.playerDebugLineX,
+						spriteBatch.Draw(PacmanGame.playerDebugLineX, dotPosition, Color.White);
+						spriteBatch.Draw(PacmanGame.playerDebugLineY, dotPosition, Color.White);
+						spriteBatch.Draw(PacmanGame.playerDebugLineX,
 										new Vector2(dotPosition.X, dotPosition.Y + 24),
 										Color.White);
-						spriteBatch.Draw(Game1.playerDebugLineY,
+						spriteBatch.Draw(PacmanGame.playerDebugLineY,
 										new Vector2(dotPosition.X + 24, dotPosition.Y),
 										Color.White);
 					}
@@ -215,10 +216,10 @@ namespace Pacman
 			foreach (Vector2 gridPos in path)
 			{
 				Vector2 pos = TileArray[(int)gridPos.X, (int)gridPos.Y].Position;
-				spriteBatch.Draw(Game1.pathfindingDebugLineX, pos, Color.White);
-				spriteBatch.Draw(Game1.pathfindingDebugLineY, pos, Color.White);
-				spriteBatch.Draw(Game1.pathfindingDebugLineX, new Vector2(pos.X, pos.Y + 24), Color.White);
-				spriteBatch.Draw(Game1.pathfindingDebugLineY, new Vector2(pos.X + 24, pos.Y), Color.White);
+				spriteBatch.Draw(PacmanGame.pathfindingDebugLineX, pos, Color.White);
+				spriteBatch.Draw(PacmanGame.pathfindingDebugLineY, pos, Color.White);
+				spriteBatch.Draw(PacmanGame.pathfindingDebugLineX, new Vector2(pos.X, pos.Y + 24), Color.White);
+				spriteBatch.Draw(PacmanGame.pathfindingDebugLineY, new Vector2(pos.X + 24, pos.Y), Color.White);
 			}
 		}
 
@@ -240,10 +241,10 @@ namespace Pacman
 		{
 			CurrentGameState = GameState.GameOver;
 
-			Game1.hasPassedInitialSong = false;
-			Game1.score = 0;
-			Game1.pacmanDeathAnimation.IsPlaying = false;
-			Game1.gamePauseTimer = Game1.gameStartSongLength;
+			PacmanGame.hasPassedInitialSong = false;
+			PacmanGame.score = 0;
+			PacmanGame.pacmanDeathAnimation.IsPlaying = false;
+			PacmanGame.gamePauseTimer = PacmanGame.gameStartSongLength;
 			pacman.ExtraLives = 4;
 
 			CreateSnacks();
@@ -372,10 +373,10 @@ namespace Pacman
 		{
 			pacman.ExtraLives -= 1;
 			StartPacmanDeathAnim = true;
-			PacmanDeathPosition = new Vector2(pacman.Position.X - (Player.radiusOffSet / 2),
-											(pacman.Position.Y - (Player.radiusOffSet / 2)) + 1);
+			PacmanDeathPosition = new Vector2(pacman.Position.X - (Player.RadiusOffSet / 2),
+											(pacman.Position.Y - (Player.RadiusOffSet / 2)) + 1);
 			MySounds.death_1.Play(); //Length = 2.78
-			Game1.gamePauseTimer = 4f;
+			PacmanGame.gamePauseTimer = 4f;
 
 			resetGhosts(i, b, p, c);
 

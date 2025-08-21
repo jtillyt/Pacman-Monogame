@@ -26,7 +26,7 @@ namespace Pacman
 			KeyboardState kState = Keyboard.GetState();
 			if (kState.IsKeyDown(Keys.Enter))
 			{
-				Game1.gameController.CurrentGameState = Controller.GameState.Normal;
+				PacmanGame._gameController.CurrentGameState = GameController.GameState.Normal;
 				MySounds.game_start.Play();
 			}
 		}

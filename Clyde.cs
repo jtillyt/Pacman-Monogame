@@ -22,7 +22,7 @@ namespace Pacman
 			rectsRight[1] = new Rectangle(1419, 339, 42, 42);
 		}
 
-		public override Vector2 getChaseTargetPosition(Vector2 playerTilePos, Dir playerDir, Tile[,] tileArray)
+		public override Vector2 getChaseTargetPosition(Vector2 playerTilePos, Direction playerDir, Tile[,] tileArray)
 		{
 			if (Tile.getDistanceBetweenTiles(playerTilePos, currentTile) > 8)
 			{
