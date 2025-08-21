@@ -1,539 +1,627 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace Pacman
 {
-    public class Controller
-    {
-        private int[,] mapDesign = new int[,]{
-            { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-            { 1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            { 1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1},
-            { 1,3,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,3,1},
-            { 1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1},
-            { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            { 1,0,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,0,1},
-            { 1,0,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,0,1},
-            { 1,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,1},
-            { 1,1,1,1,1,1,0,1,1,1,1,1,5,1,1,5,1,1,1,1,1,0,1,1,1,1,1,1},
-            { 1,1,1,1,1,1,0,1,1,1,1,1,5,1,1,5,1,1,1,1,1,0,1,1,1,1,1,1},
-            { 1,1,1,1,1,1,0,1,1,5,5,5,5,5,5,5,5,5,5,1,1,0,1,1,1,1,1,1},
-            { 1,1,1,1,1,1,0,1,1,5,1,1,1,2,2,1,1,1,5,1,1,0,1,1,1,1,1,1},
-            { 1,1,1,1,1,1,0,1,1,5,1,2,2,2,2,2,2,1,5,1,1,0,1,1,1,1,1,1},
-            { 0,0,0,0,0,0,0,5,5,5,1,2,2,2,2,2,2,1,5,5,5,0,0,0,0,0,0,0},
-            { 1,1,1,1,1,1,0,1,1,5,1,2,2,2,2,2,2,1,5,1,1,0,1,1,1,1,1,1},
-            { 1,1,1,1,1,1,0,1,1,5,1,1,1,1,1,1,1,1,5,1,1,0,1,1,1,1,1,1},
-            { 1,1,1,1,1,1,0,1,1,5,5,5,5,5,5,5,5,5,5,1,1,0,1,1,1,1,1,1},
-            { 1,1,1,1,1,1,0,1,1,5,1,1,1,1,1,1,1,1,5,1,1,0,1,1,1,1,1,1},
-            { 1,1,1,1,1,1,0,1,1,5,1,1,1,1,1,1,1,1,5,1,1,0,1,1,1,1,1,1},
-            { 1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            { 1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1},
-            { 1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1},
-            { 1,3,0,0,1,1,0,0,0,0,0,0,0,5,5,0,0,0,0,0,0,0,1,1,0,0,3,1},
-            { 1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,0,1,1,0,1,1,1},
-            { 1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,0,1,1,0,1,1,1},
-            { 1,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,1},
-            { 1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1},
-            { 1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1},
-            { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-        };
+	public class Controller
+	{
+		public const int NumberOfTilesX = 28;
+		public const int NumberOfTilesY = 31;
 
-        public enum GameState { Normal, GameOver, Menu };
-        public GameState gameState = GameState.Menu;
+		private readonly int[,] _mapDesign = new int[,] {
+			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+			{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+			{ 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1 },
+			{ 1, 3, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 3, 1 },
+			{ 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1 },
+			{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+			{ 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1 },
+			{ 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1 },
+			{ 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1 },
+			{ 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 5, 1, 1, 5, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1 },
+			{ 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 5, 1, 1, 5, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1 },
+			{ 1, 1, 1, 1, 1, 1, 0, 1, 1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 1, 1, 0, 1, 1, 1, 1, 1, 1 },
+			{ 1, 1, 1, 1, 1, 1, 0, 1, 1, 5, 1, 1, 1, 2, 2, 1, 1, 1, 5, 1, 1, 0, 1, 1, 1, 1, 1, 1 },
+			{ 1, 1, 1, 1, 1, 1, 0, 1, 1, 5, 1, 2, 2, 2, 2, 2, 2, 1, 5, 1, 1, 0, 1, 1, 1, 1, 1, 1 },
+			{ 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 1, 2, 2, 2, 2, 2, 2, 1, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0 },
+			{ 1, 1, 1, 1, 1, 1, 0, 1, 1, 5, 1, 2, 2, 2, 2, 2, 2, 1, 5, 1, 1, 0, 1, 1, 1, 1, 1, 1 },
+			{ 1, 1, 1, 1, 1, 1, 0, 1, 1, 5, 1, 1, 1, 1, 1, 1, 1, 1, 5, 1, 1, 0, 1, 1, 1, 1, 1, 1 },
+			{ 1, 1, 1, 1, 1, 1, 0, 1, 1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 1, 1, 0, 1, 1, 1, 1, 1, 1 },
+			{ 1, 1, 1, 1, 1, 1, 0, 1, 1, 5, 1, 1, 1, 1, 1, 1, 1, 1, 5, 1, 1, 0, 1, 1, 1, 1, 1, 1 },
+			{ 1, 1, 1, 1, 1, 1, 0, 1, 1, 5, 1, 1, 1, 1, 1, 1, 1, 1, 5, 1, 1, 0, 1, 1, 1, 1, 1, 1 },
+			{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+			{ 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1 },
+			{ 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1 },
+			{ 1, 3, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 3, 1 },
+			{ 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1 },
+			{ 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1 },
+			{ 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1 },
+			{ 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1 },
+			{ 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1 },
+			{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+		};
 
-        public static int numberOfTilesY;
-        public static int numberOfTilesX;
-        public static int tileWidth;
-        public static int tileHeight;
-        public Tile[,] tileArray;
-        public List<Snack> snackList = new List<Snack>();
+		private float _ghostInitialTimer = 0f;
+		public float _ghostTimerChaser = 0f;
+		public float _ghostTimerScatter = 0f;
 
-        public Enemy.EnemyState enemiesState = Enemy.EnemyState.Scatter;
+		public int TileHeight {get; init; }
+		public int TileWidth {get; init; }
 
-        public float ghostInitialTimer;
-        public float ghostInitialTimerLength = 2f;
+		public bool EatenBigSnack { get; set; } = false;
 
-        public float ghostTimerScatter;
-        public float ghostTimerScatterLength = 15f;
-        public float ghostTimerChaser;
-        public float ghostTimerChaserLength = 20f;
+		public Enemy.EnemyState EnemiesState { get; set; } = Enemy.EnemyState.Scatter;
 
-        public bool eatenBigSnack = false;
+		public GameState CurrentGameState { get; set; } = GameState.Menu;
 
-        public bool startPacmanDeathAnim = false;
-        public Vector2 pacmanDeathPosition;
+		public float GhostInitialTimerLength { get; set; } = 2f;
 
-        public int ghostScoreMultiplier = 1;
-        public Controller()
-        {
-            numberOfTilesX = 28;
-            numberOfTilesY = 31;
-            tileWidth = Game1.windowWidth / numberOfTilesX;
-            tileHeight = (Game1.windowHeight - Game1.scoreOffSet) / numberOfTilesY;
-            tileArray = new Tile[numberOfTilesX, numberOfTilesY];
-        }
+		public int GhostScoreMultiplier { get; set; } = 1;
 
-        public void createGrid() // creates grid that contains Tile objects, which represent 24x24 pixels squares in the game, all with types such as walls, snacks and etc.
-        {
-            for (int y = 0; y < numberOfTilesY; y++)
-            {
-                for (int x = 0; x < numberOfTilesX; x++)
-                {
-                    if (mapDesign[y, x] == 0) // small snack
-                    {
-                        tileArray[x, y] = new Tile(new Vector2(x * tileWidth, y * tileHeight + Game1.scoreOffSet), Tile.TileType.Snack);
-                        tileArray[x, y].isEmpty = false;
-                        snackList.Add(new Snack(Snack.SnackType.Small, new Vector2(x * tileWidth, y * tileHeight + Game1.scoreOffSet), new int[] { x, y}));
-                    }
-                    else if (mapDesign[y, x] == 1) // wall collider
-                    {
-                        tileArray[x, y] = new Tile(new Vector2(x * tileWidth, y * tileHeight + Game1.scoreOffSet), Tile.TileType.Wall);
-                        tileArray[x, y].isEmpty = false;
-                    }
-                    else if (mapDesign[y, x] == 2) //  ghost house
-                    {
-                        tileArray[x, y] = new Tile(new Vector2(x * tileWidth, y * tileHeight + Game1.scoreOffSet), Tile.TileType.GhostHouse);
-                        tileArray[x, y].isEmpty = false;
-                    }
-                    else if (mapDesign[y, x] == 3) // big snack
-                    {
-                        tileArray[x, y] = new Tile(new Vector2(x * tileWidth, y * tileHeight + Game1.scoreOffSet), Tile.TileType.Snack);
-                        tileArray[x, y].isEmpty = false;
-                        snackList.Add(new Snack(Snack.SnackType.Big, new Vector2(x * tileWidth, y * tileHeight + Game1.scoreOffSet), new int[] { x, y }));
-                    }
-                    else if (mapDesign[y, x] == 5) // empty
-                    {
-                        tileArray[x, y] = new Tile(new Vector2(x * tileWidth, y * tileHeight + Game1.scoreOffSet));
-                    }
-                }
-            }
-        }
+		public float GhostTimerChaserLength { get; set; } = 20f;
 
-        // creates snacks again for when the player eats all snacks on the screen
-        public void createSnacks()
-        {
-            for (int y = 0; y < numberOfTilesY; y++)
-            {
-                for (int x = 0; x < numberOfTilesX; x++)
-                {
-                    if (mapDesign[y, x] == 0) // small snack
-                    {
-                        tileArray[x, y] = new Tile(new Vector2(x * tileWidth, y * tileHeight + Game1.scoreOffSet), Tile.TileType.Snack);
-                        tileArray[x, y].isEmpty = false;
-                        snackList.Add(new Snack(Snack.SnackType.Small, new Vector2(x * tileWidth, y * tileHeight + Game1.scoreOffSet), new int[] { x, y }));
-                    }
-                    else if (mapDesign[y, x] == 3) // big snack
-                    {
-                        tileArray[x, y] = new Tile(new Vector2(x * tileWidth, y * tileHeight + Game1.scoreOffSet), Tile.TileType.Snack);
-                        tileArray[x, y].isEmpty = false;
-                        snackList.Add(new Snack(Snack.SnackType.Big, new Vector2(x * tileWidth, y * tileHeight + Game1.scoreOffSet), new int[] { x, y }));
-                    }
-                }
-            }
-        }
+		public float GhostTimerScatterLength { get; set; } = 15f;
 
-        public void win(Inky i, Blinky b, Pinky p, Clyde c, Player pacman)
-        {
-            createSnacks();
-            resetGhosts(i,b,p,c);
+		public Vector2 PacmanDeathPosition;
 
-            ghostTimerChaser = 0;
-            ghostTimerScatter = 0;
-            ghostInitialTimer = 0;
+		public List<Snack> SnackList { get; set; } = new List<Snack>();
 
-            eatenBigSnack = false;
+		public bool StartPacmanDeathAnim { get; set; } = false;
 
-            pacman.Position = new Vector2(tileArray[13,23].Position.X + 14, tileArray[13, 23].Position.Y);
-            pacman.CurrentTile = new Vector2(13, 23);
-            pacman.PlayerAnim.setSourceRects(Player.rectsRight);
-            pacman.PlayerAnim.setAnimIndex(2);
-            pacman.Direction = Dir.Right;
+		public Tile[,] TileArray;
 
-            MySounds.munchInstance.Stop();
-            MySounds.power_pellet_instance.Stop();
-            MySounds.retreatingInstance.Stop();
-        }
+		public Controller()
+		{
+			TileWidth = Game1.windowWidth / NumberOfTilesX;
+			TileHeight = (Game1.windowHeight - Game1.scoreOffSet) / NumberOfTilesY;
+			TileArray = new Tile[NumberOfTilesX, NumberOfTilesY];
+		}
 
-        public void gameOver(Inky i, Blinky b, Pinky p, Clyde c, Player pacman)
-        {
-            gameState = GameState.GameOver;
+		public bool CheckTileType(Vector2 gridIndex, Tile.TileType tileType)
+		{
+			bool tile = false;
+			if (TileArray[(int)gridIndex.X, (int)gridIndex.Y].tileType == tileType)
+			{
+				tile = true;
+			}
+			return tile;
+		}
 
-            Game1.hasPassedInitialSong = false;
-            Game1.score = 0;
-            Game1.pacmanDeathAnimation.IsPlaying = false;
-            Game1.gamePauseTimer = Game1.gameStartSongLength;
-            pacman.ExtraLives = 4;
+		public void CreateGrid() // creates grid that contains Tile objects, which represent 24x24 pixels squares in the game, all with types such as walls, snacks and etc.
+		{
+			for (int y = 0; y < NumberOfTilesY; y++)
+			{
+				for (int x = 0; x < NumberOfTilesX; x++)
+				{
+					if (_mapDesign[y, x] == 0) // small snack
+					{
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												Tile.TileType.Snack);
+						TileArray[x, y].isEmpty = false;
+						SnackList.Add(new Snack(Snack.SnackType.Small,
+												new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												new int[] { x, y }));
+					}
+					else if (_mapDesign[y, x] == 1) // wall collider
+					{
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												Tile.TileType.Wall);
+						TileArray[x, y].isEmpty = false;
+					}
+					else if (_mapDesign[y, x] == 2) //  ghost house
+					{
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												Tile.TileType.GhostHouse);
+						TileArray[x, y].isEmpty = false;
+					}
+					else if (_mapDesign[y, x] == 3) // big snack
+					{
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												Tile.TileType.Snack);
+						TileArray[x, y].isEmpty = false;
+						SnackList.Add(new Snack(Snack.SnackType.Big,
+												new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												new int[] { x, y }));
+					}
+					else if (_mapDesign[y, x] == 5) // empty
+					{
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet));
+					}
+				}
+			}
+		}
 
-            createSnacks();
-            resetGhosts(i, b, p, c);
+		// creates snacks again for when the player eats all snacks on the screen
+		public void CreateSnacks()
+		{
+			for (int y = 0; y < NumberOfTilesY; y++)
+			{
+				for (int x = 0; x < NumberOfTilesX; x++)
+				{
+					if (_mapDesign[y, x] == 0) // small snack
+					{
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												Tile.TileType.Snack);
+						TileArray[x, y].isEmpty = false;
+						SnackList.Add(new Snack(Snack.SnackType.Small,
+												new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												new int[] { x, y }));
+					}
+					else if (_mapDesign[y, x] == 3) // big snack
+					{
+						TileArray[x, y] = new Tile(new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												Tile.TileType.Snack);
+						TileArray[x, y].isEmpty = false;
+						SnackList.Add(new Snack(Snack.SnackType.Big,
+												new Vector2(x * TileWidth, (y * TileHeight) + Game1.scoreOffSet),
+												new int[] { x, y }));
+					}
+				}
+			}
+		}
 
-            ghostTimerChaser = 0;
-            ghostTimerScatter = 0;
-            ghostInitialTimer = 0;
+		public void DrawGhosts(Inky i, Blinky b, Pinky p, Clyde c, SpriteBatch spriteBatch, SpriteSheet spriteSheet)
+		{
+			i.Draw(spriteBatch, spriteSheet);
+			b.Draw(spriteBatch, spriteSheet);
+			p.Draw(spriteBatch, spriteSheet);
+			c.Draw(spriteBatch, spriteSheet);
+		}
 
-            eatenBigSnack = false;
+		public void DrawGridDebugger(SpriteBatch spriteBatch)
+		{
+			for (int x = 0; x < NumberOfTilesX; x++)
+			{
+				for (int y = 0; y < NumberOfTilesY; y++)
+				{
+					Vector2 dotPosition = TileArray[x, y].Position;
+					spriteBatch.Draw(Game1.debugLineX, dotPosition, Color.White);
+					spriteBatch.Draw(Game1.debugLineY, dotPosition, Color.White);
+				}
+			}
+		}
 
-            pacman.Position = new Vector2(tileArray[13, 23].Position.X + 14, tileArray[13, 23].Position.Y);
-            pacman.CurrentTile = new Vector2(13, 23);
-            pacman.PlayerAnim.setSourceRects(Player.rectsRight);
-            pacman.PlayerAnim.setAnimIndex(2);
-            pacman.Direction = Dir.Right;
+		public void drawPacmanGridDebugger(SpriteBatch spriteBatch)
+		{
+			for (int x = 0; x < NumberOfTilesX; x++)
+			{
+				for (int y = 0; y < NumberOfTilesY; y++)
+				{
+					Vector2 dotPosition = TileArray[x, y].Position;
+					if (TileArray[x, y].tileType == Tile.TileType.Player)
+					{
+						spriteBatch.Draw(Game1.playerDebugLineX, dotPosition, Color.White);
+						spriteBatch.Draw(Game1.playerDebugLineY, dotPosition, Color.White);
+						spriteBatch.Draw(Game1.playerDebugLineX,
+										new Vector2(dotPosition.X, dotPosition.Y + 24),
+										Color.White);
+						spriteBatch.Draw(Game1.playerDebugLineY,
+										new Vector2(dotPosition.X + 24, dotPosition.Y),
+										Color.White);
+					}
+				}
+			}
+		}
 
-            MySounds.munchInstance.Stop();
-            MySounds.power_pellet_instance.Stop();
-            MySounds.retreatingInstance.Stop();
-        }
+		public void drawPathFindingDebugger(SpriteBatch spriteBatch, List<Vector2> path)
+		{
+			if (path == null)
+			{
+				return;
+			}
 
-        public void killPacman(Inky i, Blinky b, Pinky p, Clyde c, Player pacman)
-        {
-            pacman.ExtraLives -= 1;
-            startPacmanDeathAnim = true;
-            pacmanDeathPosition = new Vector2(pacman.Position.X - Player.radiusOffSet / 2, pacman.Position.Y - Player.radiusOffSet / 2 + 1);
-            MySounds.death_1.Play(); //Length = 2.78
-            Game1.gamePauseTimer = 4f;
+			foreach (Vector2 gridPos in path)
+			{
+				Vector2 pos = TileArray[(int)gridPos.X, (int)gridPos.Y].Position;
+				spriteBatch.Draw(Game1.pathfindingDebugLineX, pos, Color.White);
+				spriteBatch.Draw(Game1.pathfindingDebugLineY, pos, Color.White);
+				spriteBatch.Draw(Game1.pathfindingDebugLineX, new Vector2(pos.X, pos.Y + 24), Color.White);
+				spriteBatch.Draw(Game1.pathfindingDebugLineY, new Vector2(pos.X + 24, pos.Y), Color.White);
+			}
+		}
 
-            resetGhosts(i, b, p, c);
+		public int FindSnackListPosition(Vector2 snackGridPos)
+		{
+			int listPosition = -1;
+			foreach (Snack snack in SnackList)
+			{
+				if (snack.Position == snackGridPos)
+				{
+					listPosition = SnackList.IndexOf(snack);
+				}
+			}
 
-            ghostTimerChaser = 0;
-            ghostTimerScatter = 0;
-            ghostInitialTimer = 0;
+			return listPosition;
+		}
 
-            eatenBigSnack = false;
+		public void GameOver(Inky i, Blinky b, Pinky p, Clyde c, Player pacman)
+		{
+			CurrentGameState = GameState.GameOver;
 
-            pacman.Position = new Vector2(tileArray[13, 23].Position.X + 14, tileArray[13, 23].Position.Y);
-            pacman.CurrentTile = new Vector2(13, 23);
-            pacman.PlayerAnim.setSourceRects(Player.rectsRight);
-            pacman.PlayerAnim.setAnimIndex(2);
-            pacman.Direction = Dir.Right;
+			Game1.hasPassedInitialSong = false;
+			Game1.score = 0;
+			Game1.pacmanDeathAnimation.IsPlaying = false;
+			Game1.gamePauseTimer = Game1.gameStartSongLength;
+			pacman.ExtraLives = 4;
 
-            MySounds.munchInstance.Stop();
-            MySounds.power_pellet_instance.Stop();
-            MySounds.retreatingInstance.Stop();
-        }
+			CreateSnacks();
+			resetGhosts(i, b, p, c);
 
-        public void drawGridDebugger(SpriteBatch spriteBatch)
-        {
-            for (int x = 0; x < numberOfTilesX; x++)
-            {
-                for (int y = 0; y < numberOfTilesY; y++)
-                {
-                    Vector2 dotPosition = tileArray[x, y].Position;
-                    spriteBatch.Draw(Game1.debugLineX, dotPosition, Color.White);
-                    spriteBatch.Draw(Game1.debugLineY, dotPosition, Color.White);
-                    
-                }
-            }
-        }
+			_ghostTimerChaser = 0;
+			_ghostTimerScatter = 0;
+			_ghostInitialTimer = 0;
 
-        public void drawGhosts(Inky i, Blinky b, Pinky p, Clyde c, SpriteBatch spriteBatch, SpriteSheet spriteSheet)
-        {
-            i.Draw(spriteBatch, spriteSheet);
-            b.Draw(spriteBatch, spriteSheet);
-            p.Draw(spriteBatch, spriteSheet);
-            c.Draw(spriteBatch, spriteSheet);
-        }
+			EatenBigSnack = false;
 
-        public void updateGhosts(Inky i, Blinky b, Pinky p, Clyde c, GameTime gameTime, Player Pacman, Vector2 blinkyPos)
-        {
-            if (eatenBigSnack)
-            {
-                eatenBigSnack = false;
-                setGhostStates(i, b, p, c, Enemy.EnemyState.Frightened);
-                MySounds.power_pellet_instance.Play();
-            }
+			pacman.Position = new Vector2(TileArray[13, 23].Position.X + 14, TileArray[13, 23].Position.Y);
+			pacman.CurrentTile = new Vector2(13, 23);
+			pacman.PlayerAnim.setSourceRects(Player.rectsRight);
+			pacman.PlayerAnim.setAnimIndex(2);
+			pacman.Direction = Dir.Right;
 
-            if (i.state != Enemy.EnemyState.Frightened && b.state != Enemy.EnemyState.Frightened && p.state != Enemy.EnemyState.Frightened && c.state != Enemy.EnemyState.Frightened)
-            { 
-                MySounds.power_pellet_instance.Stop();
-                ghostScoreMultiplier = 1;
-            }
-            if (i.state != Enemy.EnemyState.Eaten && b.state != Enemy.EnemyState.Eaten && p.state != Enemy.EnemyState.Eaten && c.state != Enemy.EnemyState.Eaten)
-                MySounds.retreatingInstance.Stop();
+			MySounds.munchInstance.Stop();
+			MySounds.power_pellet_instance.Stop();
+			MySounds.retreatingInstance.Stop();
+		}
 
-            if (ghostInitialTimer < ghostInitialTimerLength)
-            {
-                ghostInitialTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                c.EnemyAnim.Update(gameTime);
-                i.EnemyAnim.Update(gameTime);
-            }
-            if (ghostInitialTimer > ghostInitialTimerLength / 2 && ghostInitialTimer < ghostInitialTimerLength)
-            {
-                i.Update(gameTime, this, Pacman.CurrentTile, Pacman.Direction, blinkyPos);
-            }
-            else if (ghostInitialTimer > ghostInitialTimerLength) // When Initial timer ends, starts the timers to switch from scatter to chaser
-            {
-                c.Update(gameTime, this, Pacman.CurrentTile, Pacman.Direction, blinkyPos);
-                i.Update(gameTime, this, Pacman.CurrentTile, Pacman.Direction, blinkyPos);
-                switchBetweenStates(i, b, p, c, gameTime);
-            }
+		public bool IsNextTileAvailable(Dir dir, Vector2 tile)
+		{ // tile != new int[2] {0, 14} && tile != new int[2] {numberOfTilesX-1 ,14}
+			if (tile.Equals(new Vector2(0, 14)) || tile.Equals(new Vector2(NumberOfTilesX - 1, 14)))
+			{
+				if ((dir == Dir.Right) || (dir == Dir.Left))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				switch (dir)
+				{
+					case Dir.Right:
+						if ((TileArray[((int)tile.X) + 1, (int)tile.Y].tileType == Tile.TileType.Wall) ||
+							(TileArray[((int)tile.X) + 1, (int)tile.Y].tileType == Tile.TileType.GhostHouse))
+						{
+							return false;
+						}
+						break;
 
-            p.Update(gameTime, this, Pacman.CurrentTile, Pacman.Direction, blinkyPos);
-            b.Update(gameTime, this, Pacman.CurrentTile, Pacman.Direction, blinkyPos);
+					case Dir.Left:
+						if ((TileArray[((int)tile.X) - 1, (int)tile.Y].tileType == Tile.TileType.Wall) ||
+							(TileArray[((int)tile.X) - 1, (int)tile.Y].tileType == Tile.TileType.GhostHouse))
+						{
+							return false;
+						}
+						break;
 
-            if (i.colliding == true || b.colliding == true || p.colliding == true || c.colliding == true)
-            {
-                //killPacman(i, b, p, c, Pacman);
-                i.colliding = false;
-                b.colliding = false;
-                p.colliding = false;
-                c.colliding = false;
-            }
-        }
+					case Dir.Down:
+						if ((TileArray[(int)tile.X, ((int)tile.Y) + 1].tileType == Tile.TileType.Wall) ||
+							(TileArray[(int)tile.X, ((int)tile.Y) + 1].tileType == Tile.TileType.GhostHouse))
+						{
+							return false;
+						}
+						break;
 
-        public void switchBetweenStates(Inky i, Blinky b, Pinky p, Clyde c, GameTime gameTime)
-        {
-            if (i.state == Enemy.EnemyState.Frightened || i.state == Enemy.EnemyState.Eaten ||
-                b.state == Enemy.EnemyState.Frightened || b.state == Enemy.EnemyState.Eaten ||
-                c.state == Enemy.EnemyState.Frightened || c.state == Enemy.EnemyState.Eaten ||
-                p.state == Enemy.EnemyState.Frightened || p.state == Enemy.EnemyState.Eaten)
-                return;
+					case Dir.Up:
+						if ((TileArray[(int)tile.X, ((int)tile.Y) - 1].tileType == Tile.TileType.Wall) ||
+							(TileArray[(int)tile.X, ((int)tile.Y) - 1].tileType == Tile.TileType.GhostHouse))
+						{
+							return false;
+						}
+						break;
+				}
+				return true;
+			}
+		}
 
-            if (enemiesState == Enemy.EnemyState.Scatter)
-            {
-                ghostTimerScatter += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (ghostTimerScatter > ghostTimerScatterLength)
-                {
-                    ghostTimerScatter = 0;
-                    enemiesState = Enemy.EnemyState.Chase;
-                    setGhostStates(i, b, p, c, Enemy.EnemyState.Chase);
-                }
-            }else if (enemiesState == Enemy.EnemyState.Chase)
-            {
-                ghostTimerChaser += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (ghostTimerChaser > ghostTimerChaserLength)
-                {
-                    ghostTimerChaser = 0;
-                    enemiesState = Enemy.EnemyState.Scatter;
-                    setGhostStates(i, b, p, c, Enemy.EnemyState.Scatter);
-                }
-            }
-        }
+		public bool IsNextTileAvailableGhosts(Dir dir, Vector2 tile)
+		{ // tile != new int[2] {0, 14} && tile != new int[2] {numberOfTilesX-1 ,14}
+			if (tile.Equals(new Vector2(0, 14)) || tile.Equals(new Vector2(NumberOfTilesX - 1, 14)))
+			{
+				if ((dir == Dir.Right) || (dir == Dir.Left))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				switch (dir)
+				{
+					case Dir.Right:
+						if (TileArray[((int)tile.X) + 1, (int)tile.Y].tileType == Tile.TileType.Wall)
+						{
+							return false;
+						}
+						break;
 
-        public void setGhostStates(Inky i, Blinky b, Pinky p, Clyde c, Enemy.EnemyState eState)
-        {
-            if(eState == Enemy.EnemyState.Chase || eState == Enemy.EnemyState.Scatter || eState == Enemy.EnemyState.Eaten)
-            {
-                i.speed = i.normalSpeed;
-                b.speed = b.normalSpeed;
-                p.speed = p.normalSpeed;
-                c.speed = c.normalSpeed;
-            }
-            else
-            {
-                if (i.state != Enemy.EnemyState.Eaten)
-                    i.speed = i.frightenedSpeed;
-                if (b.state != Enemy.EnemyState.Eaten)
-                    b.speed = b.frightenedSpeed;
-                if (p.state != Enemy.EnemyState.Eaten)
-                    p.speed = p.frightenedSpeed;
-                if (c.state != Enemy.EnemyState.Eaten)
-                    c.speed = c.frightenedSpeed;
-            }
-            if (i.state != Enemy.EnemyState.Eaten)
-                i.state = eState;
-            if (b.state != Enemy.EnemyState.Eaten)
-                b.state = eState;
-            if (p.state != Enemy.EnemyState.Eaten)
-                p.state = eState;
-            if (c.state != Enemy.EnemyState.Eaten)
-                c.state = eState;
-        }
+					case Dir.Left:
+						if (TileArray[((int)tile.X) - 1, (int)tile.Y].tileType == Tile.TileType.Wall)
+						{
+							return false;
+						}
+						break;
 
-        public void drawPacmanGridDebugger(SpriteBatch spriteBatch)
-        {
-            for (int x = 0; x < numberOfTilesX; x++)
-            {
-                for (int y = 0; y < numberOfTilesY; y++)
-                {
-                    Vector2 dotPosition = tileArray[x, y].Position;
-                    if (tileArray[x, y].tileType == Tile.TileType.Player)
-                    {
-                        spriteBatch.Draw(Game1.playerDebugLineX, dotPosition, Color.White);
-                        spriteBatch.Draw(Game1.playerDebugLineY, dotPosition, Color.White);
-                        spriteBatch.Draw(Game1.playerDebugLineX, new Vector2(dotPosition.X, dotPosition.Y + 24), Color.White);
-                        spriteBatch.Draw(Game1.playerDebugLineY, new Vector2(dotPosition.X + 24, dotPosition.Y), Color.White);
-                    }
-                }
-            }
-        }
+					case Dir.Down:
+						if (TileArray[(int)tile.X, ((int)tile.Y) + 1].tileType == Tile.TileType.Wall)
+						{
+							return false;
+						}
+						break;
 
-        public void resetGhosts(Inky i, Blinky b, Pinky p, Clyde c)
-        {
-            ghostInitialTimer = 0;
+					case Dir.Up:
+						if (TileArray[(int)tile.X, ((int)tile.Y) - 1].tileType == Tile.TileType.Wall)
+						{
+							return false;
+						}
+						break;
+				}
+				return true;
+			}
+		}
 
-            setGhostStates(i, b, p, c, Enemy.EnemyState.Scatter);
+		public void KillPacman(Inky i, Blinky b, Pinky p, Clyde c, Player pacman)
+		{
+			pacman.ExtraLives -= 1;
+			StartPacmanDeathAnim = true;
+			PacmanDeathPosition = new Vector2(pacman.Position.X - (Player.radiusOffSet / 2),
+											(pacman.Position.Y - (Player.radiusOffSet / 2)) + 1);
+			MySounds.death_1.Play(); //Length = 2.78
+			Game1.gamePauseTimer = 4f;
 
-            i.EnemyAnim.setSourceRects(i.rectsUp);
-            b.EnemyAnim.setSourceRects(b.rectsLeft);
-            p.EnemyAnim.setSourceRects(p.rectsDown);
-            c.EnemyAnim.setSourceRects(c.rectsUp);
+			resetGhosts(i, b, p, c);
 
-            i.timerFrightened = 0;
-            b.timerFrightened = 0;
-            p.timerFrightened = 0;
-            c.timerFrightened = 0;
+			_ghostTimerChaser = 0;
+			_ghostTimerScatter = 0;
+			_ghostInitialTimer = 0;
 
-            i.PathToPacMan = new List<Vector2>();
-            b.PathToPacMan = new List<Vector2>();
-            p.PathToPacMan = new List<Vector2>();
-            c.PathToPacMan = new List<Vector2>();
+			EatenBigSnack = false;
 
-            i.Position = new Vector2(tileArray[11, 14].Position.X+12, tileArray[11, 14].Position.Y);
-            b.Position = new Vector2(tileArray[13, 11].Position.X + 12, tileArray[13, 11].Position.Y);
-            p.Position = new Vector2(tileArray[13, 14].Position.X + 12, tileArray[13, 14].Position.Y); 
-            c.Position = new Vector2(tileArray[15, 14].Position.X + 12, tileArray[15, 14].Position.Y); 
-        }
+			pacman.Position = new Vector2(TileArray[13, 23].Position.X + 14, TileArray[13, 23].Position.Y);
+			pacman.CurrentTile = new Vector2(13, 23);
+			pacman.PlayerAnim.setSourceRects(Player.rectsRight);
+			pacman.PlayerAnim.setAnimIndex(2);
+			pacman.Direction = Dir.Right;
 
-        public void drawPathFindingDebugger(SpriteBatch spriteBatch, List<Vector2> path)
-        {
-            if (path == null) return;
-            foreach (Vector2 gridPos in path)
-            {
-                Vector2 pos = tileArray[(int)gridPos.X, (int)gridPos.Y].Position;
-                spriteBatch.Draw(Game1.pathfindingDebugLineX, pos, Color.White);
-                spriteBatch.Draw(Game1.pathfindingDebugLineY, pos, Color.White);
-                spriteBatch.Draw(Game1.pathfindingDebugLineX, new Vector2(pos.X, pos.Y + 24), Color.White);
-                spriteBatch.Draw(Game1.pathfindingDebugLineY, new Vector2(pos.X + 24, pos.Y), Color.White);
-            }
-        }
+			MySounds.munchInstance.Stop();
+			MySounds.power_pellet_instance.Stop();
+			MySounds.retreatingInstance.Stop();
+		}
 
-        public bool isNextTileAvailable(Dir dir, Vector2 tile)
-        { // tile != new int[2] {0, 14} && tile != new int[2] {numberOfTilesX-1 ,14}
-            if (tile.Equals(new Vector2( 0, 14 )) || tile.Equals(new Vector2(numberOfTilesX - 1 ,14)))
-            {
-                if (dir == Dir.Right || dir == Dir.Left)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                switch (dir)
-                {
-                    case Dir.Right:
-                        if (tileArray[(int)tile.X + 1, (int)tile.Y].tileType == Tile.TileType.Wall || tileArray[(int)tile.X + 1, (int)tile.Y].tileType == Tile.TileType.GhostHouse)
-                        {
-                            return false;
-                        }
-                        break;
-                    case Dir.Left:
-                        if (tileArray[(int)tile.X - 1, (int)tile.Y].tileType == Tile.TileType.Wall || tileArray[(int)tile.X - 1, (int)tile.Y].tileType == Tile.TileType.GhostHouse)
-                        {
-                            return false;
-                        }
-                        break;
-                    case Dir.Down:
-                        if (tileArray[(int)tile.X, (int)tile.Y + 1].tileType == Tile.TileType.Wall || tileArray[(int)tile.X, (int)tile.Y + 1].tileType == Tile.TileType.GhostHouse)
-                        {
-                            return false;
-                        }
-                        break;
-                    case Dir.Up:
-                        if (tileArray[(int)tile.X, (int)tile.Y - 1].tileType == Tile.TileType.Wall || tileArray[(int)tile.X, (int)tile.Y - 1].tileType == Tile.TileType.GhostHouse)
-                        {
-                            return false;
-                        }
-                        break;
-                }
-                return true;
-            }
-        }
+		public void resetGhosts(Inky i, Blinky b, Pinky p, Clyde c)
+		{
+			_ghostInitialTimer = 0;
 
-        public bool isNextTileAvailableGhosts(Dir dir, Vector2 tile)
-        { // tile != new int[2] {0, 14} && tile != new int[2] {numberOfTilesX-1 ,14}
-            if (tile.Equals(new Vector2(0, 14)) || tile.Equals(new Vector2(numberOfTilesX - 1, 14)))
-            {
-                if (dir == Dir.Right || dir == Dir.Left)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                switch (dir)
-                {
-                    case Dir.Right:
-                        if (tileArray[(int)tile.X + 1, (int)tile.Y].tileType == Tile.TileType.Wall)
-                        {
-                            return false;
-                        }
-                        break;
-                    case Dir.Left:
-                        if (tileArray[(int)tile.X - 1, (int)tile.Y].tileType == Tile.TileType.Wall)
-                        {
-                            return false;
-                        }
-                        break;
-                    case Dir.Down:
-                        if (tileArray[(int)tile.X, (int)tile.Y + 1].tileType == Tile.TileType.Wall)
-                        {
-                            return false;
-                        }
-                        break;
-                    case Dir.Up:
-                        if (tileArray[(int)tile.X, (int)tile.Y - 1].tileType == Tile.TileType.Wall)
-                        {
-                            return false;
-                        }
-                        break;
-                }
-                return true;
-            }
-        }
+			SetGhostStates(i, b, p, c, Enemy.EnemyState.Scatter);
 
-        public static Dir returnOppositeDir(Dir dir)
-        {
-            switch (dir)
-            {
-                case Dir.Up:
-                    return Dir.Down;
-                case Dir.Down:
-                    return Dir.Up;
-                case Dir.Right:
-                    return Dir.Left;
-                case Dir.Left:
-                    return Dir.Right;
-            }
-            return Dir.None;
-        }
+			i.EnemyAnim.setSourceRects(i.rectsUp);
+			b.EnemyAnim.setSourceRects(b.rectsLeft);
+			p.EnemyAnim.setSourceRects(p.rectsDown);
+			c.EnemyAnim.setSourceRects(c.rectsUp);
 
-        public int findSnackListPosition(Vector2 snackGridPos)
-        {
-            int listPosition = -1;
-            foreach (Snack snack in snackList)
-            {
-                if (snack.Position == snackGridPos)
-                {
-                    listPosition = snackList.IndexOf(snack);
-                }
-            }
+			i.timerFrightened = 0;
+			b.timerFrightened = 0;
+			p.timerFrightened = 0;
+			c.timerFrightened = 0;
 
-            return listPosition;
-        }
+			i.PathToPacMan = new List<Vector2>();
+			b.PathToPacMan = new List<Vector2>();
+			p.PathToPacMan = new List<Vector2>();
+			c.PathToPacMan = new List<Vector2>();
 
-        public bool checkTileType(Vector2 gridIndex, Tile.TileType tileType)
-        {
-            bool tile = false;
-            if (tileArray[(int)gridIndex.X, (int)gridIndex.Y].tileType == tileType)
-            {
-                tile = true;
-            }
-            return tile;
-        }
-    }
+			i.Position = new Vector2(TileArray[11, 14].Position.X + 12, TileArray[11, 14].Position.Y);
+			b.Position = new Vector2(TileArray[13, 11].Position.X + 12, TileArray[13, 11].Position.Y);
+			p.Position = new Vector2(TileArray[13, 14].Position.X + 12, TileArray[13, 14].Position.Y);
+			c.Position = new Vector2(TileArray[15, 14].Position.X + 12, TileArray[15, 14].Position.Y);
+		}
+
+		public static Dir ReturnOppositeDir(Dir dir)
+		{
+			switch (dir)
+			{
+				case Dir.Up:
+					return Dir.Down;
+
+				case Dir.Down:
+					return Dir.Up;
+
+				case Dir.Right:
+					return Dir.Left;
+
+				case Dir.Left:
+					return Dir.Right;
+			}
+			return Dir.None;
+		}
+
+		public void SetGhostStates(Inky i, Blinky b, Pinky p, Clyde c, Enemy.EnemyState eState)
+		{
+			if ((eState == Enemy.EnemyState.Chase) ||
+				(eState == Enemy.EnemyState.Scatter) ||
+				(eState == Enemy.EnemyState.Eaten))
+			{
+				i.speed = i.normalSpeed;
+				b.speed = b.normalSpeed;
+				p.speed = p.normalSpeed;
+				c.speed = c.normalSpeed;
+			}
+			else
+			{
+				if (i.state != Enemy.EnemyState.Eaten)
+				{
+					i.speed = i.frightenedSpeed;
+				}
+
+				if (b.state != Enemy.EnemyState.Eaten)
+				{
+					b.speed = b.frightenedSpeed;
+				}
+
+				if (p.state != Enemy.EnemyState.Eaten)
+				{
+					p.speed = p.frightenedSpeed;
+				}
+
+				if (c.state != Enemy.EnemyState.Eaten)
+				{
+					c.speed = c.frightenedSpeed;
+				}
+			}
+			if (i.state != Enemy.EnemyState.Eaten)
+			{
+				i.state = eState;
+			}
+
+			if (b.state != Enemy.EnemyState.Eaten)
+			{
+				b.state = eState;
+			}
+
+			if (p.state != Enemy.EnemyState.Eaten)
+			{
+				p.state = eState;
+			}
+
+			if (c.state != Enemy.EnemyState.Eaten)
+			{
+				c.state = eState;
+			}
+		}
+
+		public void SwitchBetweenStates(Inky i, Blinky b, Pinky p, Clyde c, GameTime gameTime)
+		{
+			if ((i.state == Enemy.EnemyState.Frightened) ||
+				(i.state == Enemy.EnemyState.Eaten) ||
+				(b.state == Enemy.EnemyState.Frightened) ||
+				(b.state == Enemy.EnemyState.Eaten) ||
+				(c.state == Enemy.EnemyState.Frightened) ||
+				(c.state == Enemy.EnemyState.Eaten) ||
+				(p.state == Enemy.EnemyState.Frightened) ||
+				(p.state == Enemy.EnemyState.Eaten))
+			{
+				return;
+			}
+
+			if (EnemiesState == Enemy.EnemyState.Scatter)
+			{
+				_ghostTimerScatter += (float)gameTime.ElapsedGameTime.TotalSeconds;
+				if (_ghostTimerScatter > GhostTimerScatterLength)
+				{
+					_ghostTimerScatter = 0;
+					EnemiesState = Enemy.EnemyState.Chase;
+					SetGhostStates(i, b, p, c, Enemy.EnemyState.Chase);
+				}
+			}
+			else if (EnemiesState == Enemy.EnemyState.Chase)
+			{
+				_ghostTimerChaser += (float)gameTime.ElapsedGameTime.TotalSeconds;
+				if (_ghostTimerChaser > GhostTimerChaserLength)
+				{
+					_ghostTimerChaser = 0;
+					EnemiesState = Enemy.EnemyState.Scatter;
+					SetGhostStates(i, b, p, c, Enemy.EnemyState.Scatter);
+				}
+			}
+		}
+
+		public void UpdateGhosts(Inky i,
+								Blinky b,
+								Pinky p,
+								Clyde c,
+								GameTime gameTime,
+								Player Pacman,
+								Vector2 blinkyPos)
+		{
+			if (EatenBigSnack)
+			{
+				EatenBigSnack = false;
+				SetGhostStates(i, b, p, c, Enemy.EnemyState.Frightened);
+				MySounds.power_pellet_instance.Play();
+			}
+
+			if ((i.state != Enemy.EnemyState.Frightened) &&
+				(b.state != Enemy.EnemyState.Frightened) &&
+				(p.state != Enemy.EnemyState.Frightened) &&
+				(c.state != Enemy.EnemyState.Frightened))
+			{
+				MySounds.power_pellet_instance.Stop();
+				GhostScoreMultiplier = 1;
+			}
+			if ((i.state != Enemy.EnemyState.Eaten) &&
+				(b.state != Enemy.EnemyState.Eaten) &&
+				(p.state != Enemy.EnemyState.Eaten) &&
+				(c.state != Enemy.EnemyState.Eaten))
+			{
+				MySounds.retreatingInstance.Stop();
+			}
+
+			if (_ghostInitialTimer < GhostInitialTimerLength)
+			{
+				_ghostInitialTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+				c.EnemyAnim.Update(gameTime);
+				i.EnemyAnim.Update(gameTime);
+			}
+			if ((_ghostInitialTimer > GhostInitialTimerLength / 2) && (_ghostInitialTimer < GhostInitialTimerLength))
+			{
+				i.Update(gameTime, this, Pacman.CurrentTile, Pacman.Direction, blinkyPos);
+			}
+			else if (_ghostInitialTimer > GhostInitialTimerLength) // When Initial timer ends, starts the timers to switch from scatter to chaser
+			{
+				c.Update(gameTime, this, Pacman.CurrentTile, Pacman.Direction, blinkyPos);
+				i.Update(gameTime, this, Pacman.CurrentTile, Pacman.Direction, blinkyPos);
+				SwitchBetweenStates(i, b, p, c, gameTime);
+			}
+
+			p.Update(gameTime, this, Pacman.CurrentTile, Pacman.Direction, blinkyPos);
+			b.Update(gameTime, this, Pacman.CurrentTile, Pacman.Direction, blinkyPos);
+
+			if ((i.colliding == true) || (b.colliding == true) || (p.colliding == true) || (c.colliding == true))
+			{
+				// killPacman(i, b, p, c, Pacman);
+				i.colliding = false;
+				b.colliding = false;
+				p.colliding = false;
+				c.colliding = false;
+			}
+		}
+
+		public void Win(Inky i, Blinky b, Pinky p, Clyde c, Player pacman)
+		{
+			CreateSnacks();
+			resetGhosts(i, b, p, c);
+
+			_ghostTimerChaser = 0;
+			_ghostTimerScatter = 0;
+			_ghostInitialTimer = 0;
+
+			EatenBigSnack = false;
+
+			pacman.Position = new Vector2(TileArray[13, 23].Position.X + 14, TileArray[13, 23].Position.Y);
+			pacman.CurrentTile = new Vector2(13, 23);
+			pacman.PlayerAnim.setSourceRects(Player.rectsRight);
+			pacman.PlayerAnim.setAnimIndex(2);
+			pacman.Direction = Dir.Right;
+
+			MySounds.munchInstance.Stop();
+			MySounds.power_pellet_instance.Stop();
+			MySounds.retreatingInstance.Stop();
+		}
+
+		public enum GameState
+		{
+			Normal,
+			GameOver,
+			Menu
+		}
+
+;
+	}
 }
